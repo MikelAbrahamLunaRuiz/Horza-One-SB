@@ -1,6 +1,0 @@
-[build]
-builder = "NIXPACKS"
-buildCommand = "echo 'skip build'"
-
-[deploy]
-startCommand = "java -jar target/demo-0.0.1-SNAPSHOT.jar"
