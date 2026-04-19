@@ -60,6 +60,9 @@ public class Usuario {
     @Column(name = "contrasenia", length = 12)
     private String contrasena;
 
+    @Column(name = "foto_perfil", length = 255)
+    private String fotoPerfil;
+
     @Column(name = "estado_presencia", columnDefinition = "ENUM('Dentro', 'Fuera')")
     private String estadoPresencia = "Fuera"; // Valor por defecto
 
@@ -70,7 +73,7 @@ public class Usuario {
     public Usuario(Integer matricula, Rol rol, String rfc, String curp, LocalDate fechaAlta,
                    String nombreUsuario, String apellidoPaternoUsuario, String apellidoMaternoUsuario,
                    String telefono, String tipoContrato, String correo, String activo,
-                   String cpUsuario, String calleUsuario, String contrasena) {
+                   String cpUsuario, String calleUsuario, String contrasena, String fotoPerfil) {
         this.matricula = matricula;
         this.rol = rol;
         this.rfc = rfc;
@@ -86,6 +89,7 @@ public class Usuario {
         this.cpUsuario = cpUsuario;
         this.calleUsuario = calleUsuario;
         this.contrasena = contrasena;
+        this.fotoPerfil = fotoPerfil;
         this.estadoPresencia = "Fuera"; // Inicializar por defecto al crear usuario
     }
 
@@ -207,6 +211,14 @@ public class Usuario {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 
     public String getEstadoPresencia() {

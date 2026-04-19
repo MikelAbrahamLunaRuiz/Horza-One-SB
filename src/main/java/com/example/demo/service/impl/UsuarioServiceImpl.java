@@ -106,6 +106,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setCpUsuario(usuarioDTO.getCpUsuario());
         usuario.setCalleUsuario(usuarioDTO.getCalleUsuario());
         
+        // Campo opcional: foto_perfil
+        if (usuarioDTO.getFotoPerfil() != null) {
+            usuario.setFotoPerfil(usuarioDTO.getFotoPerfil());
+        }
+        
         // Solo actualizar contraseña si viene en el DTO (no null y no vacía)
         if (usuarioDTO.getContrasena() != null && !usuarioDTO.getContrasena().isEmpty()) {
             usuario.setContrasena(usuarioDTO.getContrasena());
@@ -182,7 +187,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getActivo(),
                 usuario.getCpUsuario(),
                 usuario.getCalleUsuario(),
-                null // No devolver la contraseña por seguridad
+                null, // No devolver la contraseña por seguridad
+                usuario.getFotoPerfil()
         );
     }
 
@@ -205,7 +211,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 dto.getActivo(),
                 dto.getCpUsuario(),
                 dto.getCalleUsuario(),
-                dto.getContrasena()
+                dto.getContrasena(),
+                dto.getFotoPerfil()
         );
     }
 }

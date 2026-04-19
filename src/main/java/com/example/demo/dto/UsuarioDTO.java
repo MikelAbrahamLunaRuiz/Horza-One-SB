@@ -19,13 +19,14 @@ public class UsuarioDTO {
     private String cpUsuario;
     private String calleUsuario;
     private String contrasena;
+    private String fotoPerfil;
 
     // Constructor sin argumentos
     public UsuarioDTO() {
     }
 
     // Constructor con todos los argumentos
-    public UsuarioDTO(Integer matricula, Integer idRol, Integer idCalendario, String rfc, String curp, LocalDate fechaAlta, String nombreUsuario, String apellidoPaternoUsuario, String apellidoMaternoUsuario, String telefono, String tipoContrato, String correo, String activo, String cpUsuario, String calleUsuario, String contrasena) {
+    public UsuarioDTO(Integer matricula, Integer idRol, Integer idCalendario, String rfc, String curp, LocalDate fechaAlta, String nombreUsuario, String apellidoPaternoUsuario, String apellidoMaternoUsuario, String telefono, String tipoContrato, String correo, String activo, String cpUsuario, String calleUsuario, String contrasena, String fotoPerfil) {
         this.matricula = matricula;
         this.idRol = idRol;
         this.idCalendario = idCalendario;
@@ -42,6 +43,7 @@ public class UsuarioDTO {
         this.cpUsuario = cpUsuario;
         this.calleUsuario = calleUsuario;
         this.contrasena = contrasena;
+        this.fotoPerfil = fotoPerfil;
     }
 
     // Getters y Setters
@@ -171,5 +173,13 @@ public class UsuarioDTO {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 }

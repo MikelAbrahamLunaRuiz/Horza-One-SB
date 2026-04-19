@@ -1,6 +1,8 @@
 package com.example.demo.dto;
 
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,11 +17,13 @@ public class LoginResponse {
     private String nombreRol;
     private Integer idRol;
     private String tipoPermiso;
+    private List<String> accionesAdmin;
+    private String fotoPerfil;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(Boolean success, String mensaje, Integer matricula, String nombreCompleto, String nombreRol, Integer idRol, String tipoPermiso) {
+    public LoginResponse(Boolean success, String mensaje, Integer matricula, String nombreCompleto, String nombreRol, Integer idRol, String tipoPermiso, List<String> accionesAdmin) {
         this.success = success;
         this.mensaje = mensaje;
         this.matricula = matricula;
@@ -27,6 +31,19 @@ public class LoginResponse {
         this.nombreRol = nombreRol;
         this.idRol = idRol;
         this.tipoPermiso = tipoPermiso;
+        this.accionesAdmin = accionesAdmin;
+    }
+
+    public LoginResponse(Boolean success, String mensaje, Integer matricula, String nombreCompleto, String nombreRol, Integer idRol, String tipoPermiso, List<String> accionesAdmin, String fotoPerfil) {
+        this.success = success;
+        this.mensaje = mensaje;
+        this.matricula = matricula;
+        this.nombreCompleto = nombreCompleto;
+        this.nombreRol = nombreRol;
+        this.idRol = idRol;
+        this.tipoPermiso = tipoPermiso;
+        this.accionesAdmin = accionesAdmin;
+        this.fotoPerfil = fotoPerfil;
     }
 
     public Boolean getSuccess() {
@@ -83,5 +100,21 @@ public class LoginResponse {
 
     public void setTipoPermiso(String tipoPermiso) {
         this.tipoPermiso = tipoPermiso;
+    }
+
+    public List<String> getAccionesAdmin() {
+        return accionesAdmin;
+    }
+
+    public void setAccionesAdmin(List<String> accionesAdmin) {
+        this.accionesAdmin = accionesAdmin;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 }

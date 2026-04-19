@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import com.example.demo.model.Usuario;
+import com.example.demo.respository.PermisoPersonalizadoRepository;
 import com.example.demo.respository.UsuarioRepository;
 import com.example.demo.service.LoginService;
 
@@ -16,6 +18,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PermisoPersonalizadoRepository permisoPersonalizadoRepository;
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
@@ -32,6 +37,7 @@ public class LoginServiceImpl implements LoginService {
             return new LoginResponse(
                     false,
                     "El correo no está registrado en el sistema",
+                    null,
                     null,
                     null,
                     null,
@@ -65,6 +71,7 @@ public class LoginServiceImpl implements LoginService {
                         null,
                         null,
                         null,
+                        null,
                         null
                 );
             }
@@ -72,6 +79,11 @@ public class LoginServiceImpl implements LoginService {
             String nombreCompleto = usuario.getNombreUsuario() + " " +
                     usuario.getApellidoPaternoUsuario() + " " +
                     usuario.getApellidoMaternoUsuario();
+
+            List<String> accionesAdmin = null;
+            if (usuario.getRol() != null && "ADMIN".equalsIgnoreCase(usuario.getRol().getTipoPermiso())) {
+                accionesAdmin = permisoPersonalizadoRepository.findNombresAccionesByMatricula(usuario.getMatricula());
+            }
 
             System.out.println("✅ LOGIN EXITOSO - " + nombreCompleto);
             return new LoginResponse(
@@ -81,7 +93,9 @@ public class LoginServiceImpl implements LoginService {
                     nombreCompleto,
                     usuario.getRol().getNombreRol(),
                     usuario.getRol().getIdRol(),
-                    usuario.getRol().getTipoPermiso()
+                    usuario.getRol().getTipoPermiso(),
+                    accionesAdmin,
+                    usuario.getFotoPerfil()
             );
         } else {
             System.out.println("❌ Contraseña INCORRECTA");
@@ -89,6 +103,7 @@ public class LoginServiceImpl implements LoginService {
             return new LoginResponse(
                     false,
                     "La contraseña es incorrecta",
+                    null,
                     null,
                     null,
                     null,

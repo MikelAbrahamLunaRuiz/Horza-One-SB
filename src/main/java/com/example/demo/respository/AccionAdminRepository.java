@@ -1,0 +1,13 @@
+package com.example.demo.respository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.model.AccionAdmin;
+
+@Repository
+public interface AccionAdminRepository extends JpaRepository<AccionAdmin, Integer> {
+    Optional<AccionAdmin> findByNombreAccion(String nombreAccion);
+}

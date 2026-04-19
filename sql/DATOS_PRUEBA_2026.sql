@@ -1,4 +1,59 @@
-USE HORIZON_ONE;
+USE HorzaOne;
+
+-- ============================================
+-- 0. LIMPIEZA TOTAL (SCRIPT RE-EJECUTABLE)
+-- ============================================
+-- Este archivo está pensado para correr cientos de veces.
+-- Se borran los datos de prueba y se vuelven a insertar los mismos.
+SET FOREIGN_KEY_CHECKS = 0;
+
+DELETE FROM permisos_personalizados;
+DELETE FROM vinculo_tutor;
+DELETE FROM expediente_digital;
+DELETE FROM grupos;
+DELETE FROM registro;
+DELETE FROM usuarios_calendario;
+DELETE FROM bloque_dia_asignacion;
+DELETE FROM dia_horario;
+DELETE FROM bloques_horario;
+DELETE FROM calendario;
+DELETE FROM horario;
+DELETE FROM permisos_dias;
+DELETE FROM dispositivo;
+DELETE FROM bitacora;
+DELETE FROM tutores;
+DELETE FROM acciones_admin;
+DELETE FROM usuarios;
+DELETE FROM area;
+DELETE FROM rol;
+DELETE FROM dias_semana;
+
+ALTER TABLE rol AUTO_INCREMENT = 1;
+ALTER TABLE area AUTO_INCREMENT = 1;
+ALTER TABLE horario AUTO_INCREMENT = 1;
+ALTER TABLE calendario AUTO_INCREMENT = 1;
+ALTER TABLE dia_horario AUTO_INCREMENT = 1;
+ALTER TABLE bloques_horario AUTO_INCREMENT = 1;
+ALTER TABLE bloque_dia_asignacion AUTO_INCREMENT = 1;
+ALTER TABLE permisos_dias AUTO_INCREMENT = 1;
+ALTER TABLE acciones_admin AUTO_INCREMENT = 1;
+ALTER TABLE tutores AUTO_INCREMENT = 1;
+ALTER TABLE expediente_digital AUTO_INCREMENT = 1;
+ALTER TABLE grupos AUTO_INCREMENT = 1;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================
+-- 0.1 CATÁLOGO BASE (REQUERIDO PARA FKs)
+-- ============================================
+INSERT INTO dias_semana (id_dia, nombre_dia, orden_dia) VALUES
+(1, 'Lunes', 1),
+(2, 'Martes', 2),
+(3, 'Miércoles', 3),
+(4, 'Jueves', 4),
+(5, 'Viernes', 5),
+(6, 'Sábado', 6),
+(7, 'Domingo', 7);
 
 -- ============================================
 -- SISTEMA COMPLETO DE CALENDARIOS 2024-2025-2026
@@ -6,7 +61,7 @@ USE HORIZON_ONE;
 -- IMPORTANTE: Cada usuario solo tiene UN calendario activo
 -- 2024: Archivado, sin datos (histórico)
 -- 2025: Archivado, con datos históricos
--- 2026: ACTIVO, con datos actuales enero 2026
+-- 2026: ACTIVO, con datos actuales (enero-abril 2026)
 -- ============================================
 
 -- ============================================
@@ -91,6 +146,21 @@ INSERT INTO usuarios (matricula, id_rol, rfc, curp, fecha_alta, nombre_usuario, 
 -- Usado para probar validación de calendarios vencidos
 -- ============================================
 (31, 3, 'SUJE900101ZZZ', 'SUJE900101HDFMLT99', '2024-06-01', 'Sujeto', 'De Prueba', 'Pérez', '5599887766', 'Tiempo Completo', 'sujeto.prueba@horza.com', 'Activo', '01299', 'Calle Prueba 999', 'sujeto999');
+
+-- ============================================
+-- 3.1 FOTO DE PERFIL (OPCIONAL)
+-- ============================================
+-- NOTA: Solo algunos usuarios tienen foto; los demás quedan en NULL para validar opcionalidad.
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/001_juan_perez.jpg' WHERE matricula = 1;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/002_maria_sanchez.jpg' WHERE matricula = 2;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/003_rafael_martinez.jpg' WHERE matricula = 3;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/004_carlos_lopez.jpg' WHERE matricula = 4;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/009_mikel_abraham.jpg' WHERE matricula = 9;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/010_ana_rodriguez.jpg' WHERE matricula = 10;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/012_pamela_morales.jpg' WHERE matricula = 12;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/018_gabriela_ibarra.jpg' WHERE matricula = 18;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/022_monica_nunez.jpg' WHERE matricula = 22;
+UPDATE usuarios SET foto_perfil = 'https://cdn.horzaone.mx/perfiles/2026/031_sujeto_prueba.jpg' WHERE matricula = 31;
 
 -- ============================================
 -- 4. BITÁCORAS (UNA POR USUARIO) - Actualizadas Enero 2026
@@ -315,7 +385,7 @@ INSERT INTO bloques_horario (id_bloque, id_area, nombre_bloque, hora_inicio, hor
 -- Sábado y Domingo SIN bloques (días de descanso)
 -- ============================================
 
-INSERT INTO BLOQUE_DIA_ASIGNACION (id_dia_horario, id_bloque) VALUES
+INSERT INTO bloque_dia_asignacion (id_dia_horario, id_bloque) VALUES
 -- ╔═══════════════════════════════════════════════════════════╗
 -- ║  HORARIO 1: Turno Matutino 2025 (HISTÓRICO/EXPIRADO)    ║
 -- ║  DIA_HORARIO 1-7 (Lunes-Domingo)                         ║
@@ -724,14 +794,14 @@ INSERT INTO usuarios_calendario (matricula, id_calendario) VALUES
 -- ╚═══════════════════════════════════════════════════════════╝
 -- 🚨 USUARIO ESPECIAL PARA PRUEBAS DE CALENDARIO EXPIRADO 🚨
 -- SujetoPrueba tiene calendario 1 (2025) que YA EXPIRÓ el 31/12/2025
--- Hoy es 15/01/2026, su calendario está vencido
+-- Hoy es 18/04/2026, su calendario está vencido
 -- Útil para probar validaciones de calendarios expirados
 (31, 1);  -- ⏰ SujetoPrueba - Calendario 2025 EXPIRADO ❌
 
 -- ============================================
 -- 11. PERMISOS Y DÍAS FESTIVOS COMPLETOS
 -- ============================================
-INSERT INTO PERMISOS_DIAS (tipo_permiso, fecha, descripcion, es_general, matricula, activo) VALUES
+INSERT INTO permisos_dias (tipo_permiso, fecha, descripcion, es_general, matricula, activo) VALUES
 -- FERIADOS OFICIALES 2024 (Archivados)
 ('Feriado', '2024-01-01', 'Año Nuevo 2024', TRUE, NULL, 'Inactivo'),
 ('Feriado', '2024-02-05', 'Día de la Constitución 2024', TRUE, NULL, 'Inactivo'),
@@ -771,10 +841,109 @@ INSERT INTO PERMISOS_DIAS (tipo_permiso, fecha, descripcion, es_general, matricu
 ('Descanso', '2026-02-10', 'Cita importante', FALSE, 8, 'Activo');
 
 -- ============================================
+-- 12. EXTENSIÓN ADMIN DINÁMICA (RBAC ADMIN)
+-- ============================================
+INSERT INTO acciones_admin (id_accion, nombre_accion) VALUES
+(1, 'ver_bitacora'),
+(2, 'ver_auditoria'),
+(3, 'gestionar_usuarios'),
+(4, 'reactivar_usuarios'),
+(5, 'asignar_calendarios'),
+(6, 'editar_horarios'),
+(7, 'gestionar_dispositivos'),
+(8, 'exportar_reportes'),
+(9, 'ver_panel_ejecutivo'),
+(10, 'aprobar_ajustes_asistencia'),
+(11, 'gestionar_feriados'),
+(12, 'administrar_grupos'),
+(13, 'gestionar_tutores'),
+(14, 'gestionar_expedientes'),
+(15, 'asignar_permisos_admin');
+
+-- Admin #1 (matrícula 1): perfil completo
+-- Admin #2 (matrícula 2): perfil operativo/reportes
+-- Admin #3 (matrícula 3): perfil control/auditoría
+INSERT INTO permisos_personalizados (matricula, id_accion) VALUES
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5),
+(1, 6), (1, 7), (1, 8), (1, 9), (1, 10),
+(1, 11), (1, 12), (1, 13), (1, 14), (1, 15),
+(2, 1), (2, 5), (2, 8), (2, 9), (2, 11), (2, 12), (2, 13),
+(3, 1), (3, 2), (3, 8), (3, 10), (3, 14);
+
+-- ============================================
+-- 13. TUTORES Y VÍNCULOS (LECTURA / OPCIONAL)
+-- ============================================
+INSERT INTO tutores (id_tutor, nombre, correo, contrasenia) VALUES
+(1, 'Ana María Torres', 'ana.torres.tutor@familia.com', 'TutorAna#2026'),
+(2, 'José Luis Vázquez', 'jose.vazquez.tutor@familia.com', 'TutorJose#2026'),
+(3, 'Laura Patricia Ruiz', 'laura.ruiz.tutor@familia.com', 'TutorLaura#2026'),
+(4, 'Miguel Ángel Cordero', 'miguel.cordero.tutor@familia.com', 'TutorMiguel#2026'),
+(5, 'Rosa Elena Chávez', 'rosa.chavez.tutor@familia.com', 'TutorRosa#2026'),
+(6, 'Edgar Isaac Pineda', 'edgar.pineda.tutor@familia.com', 'TutorEdgar#2026'),
+(7, 'Brenda Sofía Campos', 'brenda.campos.tutor@familia.com', 'TutorBrenda#2026'),
+(8, 'Héctor Iván Salazar', 'hector.salazar.tutor@familia.com', 'TutorHector#2026'),
+(9, 'Daniela Fernanda Cortés', 'daniela.cortes.tutor@familia.com', 'TutorDaniela#2026'),
+(10, 'Oscar Emmanuel Moreno', 'oscar.moreno.tutor@familia.com', 'TutorOscar#2026');
+
+INSERT INTO vinculo_tutor (id_tutor, matricula_estudiante) VALUES
+(1, 11), (2, 11),
+(3, 12),
+(4, 13),
+(5, 14), (6, 14),
+(2, 20),
+(7, 21),
+(8, 22),
+(9, 24),
+(10, 31),
+(1, 25),
+(6, 23),
+(7, 17);
+
+-- ============================================
+-- 14. EXPEDIENTE DIGITAL (OPCIONAL)
+-- ============================================
+INSERT INTO expediente_digital (id_archivo, matricula, url_pdf, tipo_doc, fecha_carga) VALUES
+(1, 11, 'https://cdn.horzaone.mx/expedientes/2026/11/acta_nacimiento.pdf', 'Acta Nacimiento', '2026-02-05 09:10:00'),
+(2, 11, 'https://cdn.horzaone.mx/expedientes/2026/11/comprobante_domicilio.pdf', 'Comprobante Domicilio', '2026-02-05 09:15:00'),
+(3, 12, 'https://cdn.horzaone.mx/expedientes/2026/12/curp.pdf', 'CURP', '2026-02-06 10:00:00'),
+(4, 12, 'https://cdn.horzaone.mx/expedientes/2026/12/constancia_estudios.pdf', 'Constancia Estudios', '2026-02-06 10:05:00'),
+(5, 13, 'https://cdn.horzaone.mx/expedientes/2026/13/ine_tutor.pdf', 'INE Tutor', '2026-02-07 11:20:00'),
+(6, 14, 'https://cdn.horzaone.mx/expedientes/2026/14/acta_nacimiento.pdf', 'Acta Nacimiento', '2026-02-07 11:25:00'),
+(7, 14, 'https://cdn.horzaone.mx/expedientes/2026/14/carta_responsable.pdf', 'Carta Responsable', '2026-02-07 11:28:00'),
+(8, 20, 'https://cdn.horzaone.mx/expedientes/2026/20/seguro_escolar.pdf', 'Seguro Escolar', '2026-03-01 08:45:00'),
+(9, 21, 'https://cdn.horzaone.mx/expedientes/2026/21/constancia_medica.pdf', 'Constancia Medica', '2026-03-03 12:15:00'),
+(10, 22, 'https://cdn.horzaone.mx/expedientes/2026/22/nss.pdf', 'NSS', '2026-03-04 13:00:00'),
+(11, 23, 'https://cdn.horzaone.mx/expedientes/2026/23/comprobante_domicilio.pdf', 'Comprobante Domicilio', '2026-03-05 14:00:00'),
+(12, 24, 'https://cdn.horzaone.mx/expedientes/2026/24/acta_nacimiento.pdf', 'Acta Nacimiento', '2026-03-08 09:30:00'),
+(13, 25, 'https://cdn.horzaone.mx/expedientes/2026/25/curp.pdf', 'CURP', '2026-03-08 09:35:00'),
+(14, 31, 'https://cdn.horzaone.mx/expedientes/2026/31/caso_prueba_identificacion.pdf', 'Identificacion Temporal', '2026-03-20 16:10:00'),
+(15, 1, 'https://cdn.horzaone.mx/expedientes/2026/1/nombramiento_admin.pdf', 'Nombramiento Admin', '2026-04-01 09:00:00'),
+(16, 2, 'https://cdn.horzaone.mx/expedientes/2026/2/acreditacion_supervision.pdf', 'Acreditacion Supervision', '2026-04-02 09:10:00'),
+(17, 3, 'https://cdn.horzaone.mx/expedientes/2026/3/auditoria_interna_q2.pdf', 'Auditoria Interna', '2026-04-03 09:20:00'),
+(18, 9, 'https://cdn.horzaone.mx/expedientes/2026/9/certificacion_analitica.pdf', 'Certificacion', '2026-04-05 10:40:00'),
+(19, 10, 'https://cdn.horzaone.mx/expedientes/2026/10/cedula_profesional.pdf', 'Cedula Profesional', '2026-04-05 10:45:00'),
+(20, 17, 'https://cdn.horzaone.mx/expedientes/2026/17/permiso_salida.pdf', 'Permiso Salida', '2026-04-10 15:30:00');
+
+-- ============================================
+-- 15. GRUPOS CON LÍDER (USUARIO EXISTENTE)
+-- ============================================
+INSERT INTO grupos (id_grupo, nombre_grupo, matricula_lider) VALUES
+(1, 'Administracion Estrategica', 1),
+(2, 'Supervision Operativa Norte', 4),
+(3, 'Analitica Financiera Q2-2026', 9),
+(4, 'Control Escolar Matutino', 2),
+(5, 'Tutorias Secundaria A', 5),
+(6, 'Laboratorio TI Vespertino', 7),
+(7, 'Brigada Operaciones Planta C', 18),
+(8, 'Auditoria Interna Abril 2026', 3),
+(9, 'Expediente y Validaciones', 10),
+(10, 'Programa Becarios 2026', 28);
+
+-- ============================================
 -- VERIFICACIÓN COMPLETA DEL SISTEMA DE TURNOS
 -- ============================================
 SELECT '╔════════════════════════════════════════════════════════════╗' AS '';
-SELECT '║  SISTEMA HORZA-ONE - RESUMEN COMPLETO ENERO 2026          ║' AS '';
+SELECT '║  SISTEMA HORZA-ONE - RESUMEN COMPLETO ENERO-ABRIL 2026    ║' AS '';
 SELECT '║  Sistema de Turnos: Matutino (07:00-14:00) y Nocturno     ║' AS '';
 SELECT '╚════════════════════════════════════════════════════════════╝' AS '';
 SELECT '' AS '';
@@ -785,6 +954,20 @@ UNION ALL SELECT 'Total Áreas:', COUNT(*) FROM area
 UNION ALL SELECT 'Total Dispositivos:', COUNT(*) FROM dispositivo
 UNION ALL SELECT 'Dispositivos Activos:', COUNT(*) FROM dispositivo WHERE activo_dispositivo = 'Activo'
 UNION ALL SELECT 'Dispositivos Inactivos:', COUNT(*) FROM dispositivo WHERE activo_dispositivo = 'Inactivo'
+UNION ALL SELECT 'Usuarios con foto de perfil:', COUNT(*) FROM usuarios WHERE foto_perfil IS NOT NULL AND TRIM(foto_perfil) <> ''
+UNION ALL SELECT '', ''
+UNION ALL SELECT '🛡️ EXTENSIÓN ADMIN DINÁMICA', '==================='
+UNION ALL SELECT 'Acciones admin catálogo:', COUNT(*) FROM acciones_admin
+UNION ALL SELECT 'Permisos personalizados asignados:', COUNT(*) FROM permisos_personalizados
+UNION ALL SELECT 'Admins con permisos personalizados:', COUNT(DISTINCT matricula) FROM permisos_personalizados
+UNION ALL SELECT '', ''
+UNION ALL SELECT '🏫 MÓDULO ESCOLAR (NUEVAS TABLAS)', '==================='
+UNION ALL SELECT 'Tutores registrados:', COUNT(*) FROM tutores
+UNION ALL SELECT 'Vínculos tutor-estudiante:', COUNT(*) FROM vinculo_tutor
+UNION ALL SELECT 'Estudiantes con tutor:', COUNT(DISTINCT matricula_estudiante) FROM vinculo_tutor
+UNION ALL SELECT 'Documentos en expediente digital:', COUNT(*) FROM expediente_digital
+UNION ALL SELECT 'Usuarios con expediente:', COUNT(DISTINCT matricula) FROM expediente_digital
+UNION ALL SELECT 'Grupos con líder:', COUNT(*) FROM grupos
 UNION ALL SELECT '', ''
 UNION ALL SELECT '📅 SISTEMA DE CALENDARIOS (3 calendarios)', '==================='
 UNION ALL SELECT 'Calendarios Totales:', COUNT(*) FROM calendario
@@ -853,7 +1036,7 @@ SELECT '' AS '';
 SELECT '🧪 CASOS DE PRUEBA ESPECIALES' AS Sección, '===================' AS Detalle
 UNION ALL SELECT 'Usuario SujetoPrueba (31):', 'Tiene calendario 1 (2025 EXPIRADO)'
 UNION ALL SELECT 'Calendario vigencia:', 'Del 01/01/2025 al 31/12/2025'
-UNION ALL SELECT 'Fecha actual sistema:', '15/01/2026'
+UNION ALL SELECT 'Fecha actual sistema:', '18/04/2026'
 UNION ALL SELECT 'Estado esperado:', '❌ ERROR - Calendario vencido'
 UNION ALL SELECT 'Prueba recomendada:', 'Intentar registrar asistencia'
 UNION ALL SELECT 'Resultado esperado:', 'Sistema debe rechazar el registro'
