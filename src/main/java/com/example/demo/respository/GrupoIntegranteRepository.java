@@ -13,4 +13,6 @@ public interface GrupoIntegranteRepository extends JpaRepository<GrupoIntegrante
     List<GrupoIntegrante> findByMatricula(Integer matricula);
 
     List<GrupoIntegrante> findByIdGrupo(Integer idGrupo);
+
+    List<GrupoIntegrante> findByIdGrupoOrderByMatriculaAsc(Integer idGrupo);
 }

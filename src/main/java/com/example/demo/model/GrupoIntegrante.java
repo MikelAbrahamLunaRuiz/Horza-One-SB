@@ -22,9 +22,6 @@ public class GrupoIntegrante {
     @Column(name = "matricula")
     private Integer matricula;
 
-    @Column(name = "rol_grupo", nullable = false, length = 20)
-    private String rolGrupo;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_grupo", insertable = false, updatable = false)
     private Grupo grupo;
@@ -36,10 +33,9 @@ public class GrupoIntegrante {
     public GrupoIntegrante() {
     }
 
-    public GrupoIntegrante(Integer idGrupo, Integer matricula, String rolGrupo) {
+    public GrupoIntegrante(Integer idGrupo, Integer matricula) {
         this.idGrupo = idGrupo;
         this.matricula = matricula;
-        this.rolGrupo = rolGrupo;
     }
 
     public Integer getIdGrupo() {
@@ -56,14 +52,6 @@ public class GrupoIntegrante {
 
     public void setMatricula(Integer matricula) {
         this.matricula = matricula;
-    }
-
-    public String getRolGrupo() {
-        return rolGrupo;
-    }
-
-    public void setRolGrupo(String rolGrupo) {
-        this.rolGrupo = rolGrupo;
     }
 
     public Grupo getGrupo() {

@@ -20,4 +20,10 @@ public interface GrupoService {
     List<GrupoDTO> obtenerPorLider(Integer matriculaLider);
 
     List<GrupoDetalleDTO> obtenerDetallePorUsuario(Integer matriculaUsuario);
+
+    List<GrupoDetalleDTO> obtenerDetalleCompleto();
+
+    GrupoDetalleDTO obtenerDetallePorGrupo(Integer idGrupo);
+
+    GrupoDetalleDTO actualizarIntegrantes(Integer idGrupo, List<Integer> matriculas);
 }

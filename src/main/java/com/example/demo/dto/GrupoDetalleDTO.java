@@ -6,22 +6,18 @@ public class GrupoDetalleDTO {
 
     private Integer idGrupo;
     private String nombreGrupo;
-    private Integer matriculaLider;
-    private String nombreLider;
-    private String nombreCapitan;
+    private Integer matriculaAdministrador;
     private String nombreAdministrador;
     private List<GrupoIntegranteDTO> integrantes;
 
     public GrupoDetalleDTO() {
     }
 
-    public GrupoDetalleDTO(Integer idGrupo, String nombreGrupo, Integer matriculaLider, String nombreLider,
-                           String nombreCapitan, String nombreAdministrador, List<GrupoIntegranteDTO> integrantes) {
+    public GrupoDetalleDTO(Integer idGrupo, String nombreGrupo, Integer matriculaAdministrador,
+                           String nombreAdministrador, List<GrupoIntegranteDTO> integrantes) {
         this.idGrupo = idGrupo;
         this.nombreGrupo = nombreGrupo;
-        this.matriculaLider = matriculaLider;
-        this.nombreLider = nombreLider;
-        this.nombreCapitan = nombreCapitan;
+        this.matriculaAdministrador = matriculaAdministrador;
         this.nombreAdministrador = nombreAdministrador;
         this.integrantes = integrantes;
     }
@@ -42,28 +38,12 @@ public class GrupoDetalleDTO {
         this.nombreGrupo = nombreGrupo;
     }
 
-    public Integer getMatriculaLider() {
-        return matriculaLider;
+    public Integer getMatriculaAdministrador() {
+        return matriculaAdministrador;
     }
 
-    public void setMatriculaLider(Integer matriculaLider) {
-        this.matriculaLider = matriculaLider;
-    }
-
-    public String getNombreLider() {
-        return nombreLider;
-    }
-
-    public void setNombreLider(String nombreLider) {
-        this.nombreLider = nombreLider;
-    }
-
-    public String getNombreCapitan() {
-        return nombreCapitan;
-    }
-
-    public void setNombreCapitan(String nombreCapitan) {
-        this.nombreCapitan = nombreCapitan;
+    public void setMatriculaAdministrador(Integer matriculaAdministrador) {
+        this.matriculaAdministrador = matriculaAdministrador;
     }
 
     public String getNombreAdministrador() {

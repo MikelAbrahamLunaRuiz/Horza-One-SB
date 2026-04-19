@@ -5,18 +5,18 @@ public class GrupoIntegranteDTO {
     private Integer matricula;
     private String nombreCompleto;
     private String nombreRolSistema;
-    private String rolGrupo;
     private String fotoPerfil;
+    private Boolean administrador;
 
     public GrupoIntegranteDTO() {
     }
 
-    public GrupoIntegranteDTO(Integer matricula, String nombreCompleto, String nombreRolSistema, String rolGrupo, String fotoPerfil) {
+    public GrupoIntegranteDTO(Integer matricula, String nombreCompleto, String nombreRolSistema, String fotoPerfil, Boolean administrador) {
         this.matricula = matricula;
         this.nombreCompleto = nombreCompleto;
         this.nombreRolSistema = nombreRolSistema;
-        this.rolGrupo = rolGrupo;
         this.fotoPerfil = fotoPerfil;
+        this.administrador = administrador;
     }
 
     public Integer getMatricula() {
@@ -43,19 +43,19 @@ public class GrupoIntegranteDTO {
         this.nombreRolSistema = nombreRolSistema;
     }
 
-    public String getRolGrupo() {
-        return rolGrupo;
-    }
-
-    public void setRolGrupo(String rolGrupo) {
-        this.rolGrupo = rolGrupo;
-    }
-
     public String getFotoPerfil() {
         return fotoPerfil;
     }
 
     public void setFotoPerfil(String fotoPerfil) {
         this.fotoPerfil = fotoPerfil;
+    }
+
+    public Boolean getAdministrador() {
+        return administrador;
+    }
+
+    public void setAdministrador(Boolean administrador) {
+        this.administrador = administrador;
     }
 }

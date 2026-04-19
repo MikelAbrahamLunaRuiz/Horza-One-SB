@@ -926,7 +926,7 @@ INSERT INTO expediente_digital (id_archivo, matricula, url_pdf, tipo_doc, fecha_
 (20, 17, 'https://cdn.horzaone.mx/expedientes/2026/17/permiso_salida.pdf', 'Permiso Salida', '2026-04-10 15:30:00');
 
 -- ============================================
--- 15. GRUPOS CON LÍDER (USUARIO EXISTENTE)
+-- 15. GRUPOS CON ADMINISTRADOR (USUARIO EXISTENTE)
 -- ============================================
 INSERT INTO grupos (id_grupo, nombre_grupo, matricula_lider) VALUES
 (1, 'Administracion Estrategica', 1),
@@ -940,79 +940,27 @@ INSERT INTO grupos (id_grupo, nombre_grupo, matricula_lider) VALUES
 (9, 'Expediente y Validaciones', 10),
 (10, 'Programa Becarios 2026', 28);
 
--- ============================================
--- 15.1 INTEGRANTES DE GRUPOS (LÍDER, CAPITÁN, ADMINISTRADOR, MIEMBRO)
--- ============================================
-INSERT INTO grupo_integrantes (id_grupo, matricula, rol_grupo) VALUES
--- Grupo 1: Administracion Estrategica
-(1, 1, 'LIDER_SUPREMO'),
-(1, 2, 'CAPITAN'),
-(1, 3, 'ADMINISTRADOR'),
-(1, 11, 'MIEMBRO'),
-(1, 12, 'MIEMBRO'),
-
--- Grupo 2: Supervision Operativa Norte
-(2, 4, 'LIDER_SUPREMO'),
-(2, 5, 'CAPITAN'),
-(2, 6, 'ADMINISTRADOR'),
-(2, 13, 'MIEMBRO'),
-(2, 14, 'MIEMBRO'),
-
--- Grupo 3: Analitica Financiera Q2-2026
-(3, 9, 'LIDER_SUPREMO'),
-(3, 10, 'CAPITAN'),
-(3, 2, 'ADMINISTRADOR'),
-(3, 15, 'MIEMBRO'),
-(3, 16, 'MIEMBRO'),
-(3, 29, 'MIEMBRO'),
-
--- Grupo 4: Control Escolar Matutino
-(4, 2, 'LIDER_SUPREMO'),
-(4, 11, 'CAPITAN'),
-(4, 12, 'ADMINISTRADOR'),
-(4, 20, 'MIEMBRO'),
-(4, 21, 'MIEMBRO'),
-
--- Grupo 5: Tutorias Secundaria A
-(5, 5, 'LIDER_SUPREMO'),
-(5, 14, 'CAPITAN'),
-(5, 22, 'ADMINISTRADOR'),
-(5, 23, 'MIEMBRO'),
-(5, 24, 'MIEMBRO'),
-
--- Grupo 6: Laboratorio TI Vespertino
-(6, 7, 'LIDER_SUPREMO'),
-(6, 18, 'CAPITAN'),
-(6, 26, 'ADMINISTRADOR'),
-(6, 27, 'MIEMBRO'),
-(6, 30, 'MIEMBRO'),
-
--- Grupo 7: Brigada Operaciones Planta C
-(7, 18, 'LIDER_SUPREMO'),
-(7, 19, 'CAPITAN'),
-(7, 4, 'ADMINISTRADOR'),
-(7, 25, 'MIEMBRO'),
-(7, 28, 'MIEMBRO'),
-
--- Grupo 8: Auditoria Interna Abril 2026
-(8, 3, 'LIDER_SUPREMO'),
-(8, 1, 'CAPITAN'),
-(8, 9, 'ADMINISTRADOR'),
-(8, 31, 'MIEMBRO'),
-
--- Grupo 9: Expediente y Validaciones
-(9, 10, 'LIDER_SUPREMO'),
-(9, 12, 'CAPITAN'),
-(9, 13, 'ADMINISTRADOR'),
-(9, 17, 'MIEMBRO'),
-(9, 21, 'MIEMBRO'),
-
--- Grupo 10: Programa Becarios 2026
-(10, 28, 'LIDER_SUPREMO'),
-(10, 29, 'CAPITAN'),
-(10, 30, 'ADMINISTRADOR'),
-(10, 20, 'MIEMBRO'),
-(10, 27, 'MIEMBRO');
+INSERT INTO grupo_integrantes (id_grupo, matricula) VALUES
+-- Grupo 1
+(1, 1), (1, 2), (1, 3), (1, 9),
+-- Grupo 2
+(2, 4), (2, 5), (2, 6), (2, 18),
+-- Grupo 3
+(3, 9), (3, 10), (3, 22), (3, 23),
+-- Grupo 4
+(4, 2), (4, 11), (4, 12), (4, 13), (4, 14),
+-- Grupo 5
+(5, 5), (5, 14), (5, 17), (5, 21),
+-- Grupo 6
+(6, 7), (6, 20), (6, 24), (6, 25),
+-- Grupo 7
+(7, 18), (7, 19), (7, 26), (7, 27),
+-- Grupo 8
+(8, 3), (8, 8), (8, 16), (8, 31),
+-- Grupo 9
+(9, 10), (9, 15), (9, 29), (9, 30),
+-- Grupo 10
+(10, 28), (10, 11), (10, 12), (10, 21), (10, 24);
 
 -- ============================================
 -- VERIFICACIÓN COMPLETA DEL SISTEMA DE TURNOS
@@ -1042,7 +990,7 @@ UNION ALL SELECT 'Vínculos tutor-estudiante:', COUNT(*) FROM vinculo_tutor
 UNION ALL SELECT 'Estudiantes con tutor:', COUNT(DISTINCT matricula_estudiante) FROM vinculo_tutor
 UNION ALL SELECT 'Documentos en expediente digital:', COUNT(*) FROM expediente_digital
 UNION ALL SELECT 'Usuarios con expediente:', COUNT(DISTINCT matricula) FROM expediente_digital
-UNION ALL SELECT 'Grupos con líder:', COUNT(*) FROM grupos
+UNION ALL SELECT 'Grupos con administrador:', COUNT(*) FROM grupos
 UNION ALL SELECT 'Integrantes de grupos:', COUNT(*) FROM grupo_integrantes
 UNION ALL SELECT 'Usuarios con membresía de grupo:', COUNT(DISTINCT matricula) FROM grupo_integrantes
 UNION ALL SELECT '', ''

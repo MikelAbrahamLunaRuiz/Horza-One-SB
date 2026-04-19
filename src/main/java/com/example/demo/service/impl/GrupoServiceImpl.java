@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import com.example.demo.dto.GrupoDetalleDTO;
 import com.example.demo.dto.GrupoIntegranteDTO;
 import com.example.demo.model.Grupo;
 import com.example.demo.model.GrupoIntegrante;
+import com.example.demo.model.GrupoIntegranteId;
 import com.example.demo.model.Usuario;
 import com.example.demo.respository.GrupoIntegranteRepository;
 import com.example.demo.respository.GrupoRepository;
@@ -38,14 +40,14 @@ public class GrupoServiceImpl implements GrupoService {
     @Override
     public List<GrupoDTO> obtenerTodos() {
         return grupoRepository.findAll().stream()
+                .sorted(Comparator.comparing(Grupo::getNombreGrupo, String.CASE_INSENSITIVE_ORDER))
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public GrupoDTO obtenerPorId(Integer idGrupo) {
-        Grupo grupo = grupoRepository.findById(idGrupo)
-                .orElseThrow(() -> new RuntimeException("Grupo no encontrado con ID: " + idGrupo));
+        Grupo grupo = obtenerGrupoPorId(idGrupo);
         return convertirADTO(grupo);
     }
 
@@ -62,24 +64,33 @@ public class GrupoServiceImpl implements GrupoService {
         grupo.setNombreGrupo(grupoDTO.getNombreGrupo().trim());
         grupo.setMatriculaLider(grupoDTO.getMatriculaLider());
 
-        return convertirADTO(grupoRepository.save(grupo));
+        Grupo grupoGuardado = grupoRepository.save(grupo);
+        asegurarAdministradorComoIntegrante(grupoGuardado.getIdGrupo(), grupoGuardado.getMatriculaLider());
+        return convertirADTO(grupoGuardado);
     }
 
     @Override
     public GrupoDTO actualizar(Integer idGrupo, GrupoDTO grupoDTO) {
-        Grupo grupo = grupoRepository.findById(idGrupo)
-                .orElseThrow(() -> new RuntimeException("Grupo no encontrado con ID: " + idGrupo));
+        Grupo grupo = obtenerGrupoPorId(idGrupo);
 
-        if (grupoDTO.getNombreGrupo() != null && !grupoDTO.getNombreGrupo().trim().isEmpty()) {
-            grupo.setNombreGrupo(grupoDTO.getNombreGrupo().trim());
+        if (tieneTexto(grupoDTO.getNombreGrupo())) {
+            String nombreNormalizado = grupoDTO.getNombreGrupo().trim();
+            grupoRepository.findByNombreGrupo(nombreNormalizado)
+                    .filter(g -> !g.getIdGrupo().equals(idGrupo))
+                    .ifPresent(g -> {
+                        throw new RuntimeException("Ya existe un grupo con ese nombre");
+                    });
+            grupo.setNombreGrupo(nombreNormalizado);
         }
+
         if (grupoDTO.getMatriculaLider() != null) {
-            usuarioRepository.findById(grupoDTO.getMatriculaLider())
-                    .orElseThrow(() -> new RuntimeException("Líder no encontrado con matrícula: " + grupoDTO.getMatriculaLider()));
+            validarAdministrador(grupoDTO.getMatriculaLider());
             grupo.setMatriculaLider(grupoDTO.getMatriculaLider());
         }
 
-        return convertirADTO(grupoRepository.save(grupo));
+        Grupo grupoGuardado = grupoRepository.save(grupo);
+        asegurarAdministradorComoIntegrante(grupoGuardado.getIdGrupo(), grupoGuardado.getMatriculaLider());
+        return convertirADTO(grupoGuardado);
     }
 
     @Override
@@ -92,10 +103,10 @@ public class GrupoServiceImpl implements GrupoService {
 
     @Override
     public List<GrupoDTO> obtenerPorLider(Integer matriculaLider) {
-        usuarioRepository.findById(matriculaLider)
-                .orElseThrow(() -> new RuntimeException("Líder no encontrado con matrícula: " + matriculaLider));
+        validarAdministrador(matriculaLider);
 
         return grupoRepository.findByMatriculaLider(matriculaLider).stream()
+                .sorted(Comparator.comparing(Grupo::getNombreGrupo, String.CASE_INSENSITIVE_ORDER))
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
@@ -127,100 +138,165 @@ public class GrupoServiceImpl implements GrupoService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<GrupoDetalleDTO> obtenerDetalleCompleto() {
+        return grupoRepository.findAll().stream()
+                .sorted(Comparator.comparing(Grupo::getNombreGrupo, String.CASE_INSENSITIVE_ORDER))
+                .map(this::convertirADetalleDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public GrupoDetalleDTO obtenerDetallePorGrupo(Integer idGrupo) {
+        return convertirADetalleDTO(obtenerGrupoPorId(idGrupo));
+    }
+
+    @Override
+    public GrupoDetalleDTO actualizarIntegrantes(Integer idGrupo, List<Integer> matriculas) {
+        Grupo grupo = obtenerGrupoPorId(idGrupo);
+
+        Set<Integer> matriculasObjetivo = new LinkedHashSet<>();
+        if (matriculas != null) {
+            matriculas.stream()
+                    .filter(Objects::nonNull)
+                    .forEach(matriculasObjetivo::add);
+        }
+        matriculasObjetivo.add(grupo.getMatriculaLider());
+
+        validarUsuariosExistentes(matriculasObjetivo);
+
+        List<GrupoIntegrante> integrantesActuales = grupoIntegranteRepository.findByIdGrupo(idGrupo);
+        Set<Integer> matriculasActuales = integrantesActuales.stream()
+                .map(GrupoIntegrante::getMatricula)
+                .collect(Collectors.toSet());
+
+        for (GrupoIntegrante integranteActual : integrantesActuales) {
+            if (!matriculasObjetivo.contains(integranteActual.getMatricula())) {
+                grupoIntegranteRepository.delete(integranteActual);
+            }
+        }
+
+        for (Integer matricula : matriculasObjetivo) {
+            if (!matriculasActuales.contains(matricula)) {
+                grupoIntegranteRepository.save(new GrupoIntegrante(idGrupo, matricula));
+            }
+        }
+
+        return convertirADetalleDTO(grupo);
+    }
+
+    private Grupo obtenerGrupoPorId(Integer idGrupo) {
+        return grupoRepository.findById(idGrupo)
+                .orElseThrow(() -> new RuntimeException("Grupo no encontrado con ID: " + idGrupo));
+    }
+
     private void validarGrupo(GrupoDTO grupoDTO) {
-        if (grupoDTO.getNombreGrupo() == null || grupoDTO.getNombreGrupo().trim().isEmpty()) {
+        if (!tieneTexto(grupoDTO.getNombreGrupo())) {
             throw new RuntimeException("El nombre del grupo es obligatorio");
         }
         if (grupoDTO.getMatriculaLider() == null) {
-            throw new RuntimeException("La matrícula del líder es obligatoria");
+            throw new RuntimeException("La matrícula del administrador es obligatoria");
         }
-        usuarioRepository.findById(grupoDTO.getMatriculaLider())
-                .orElseThrow(() -> new RuntimeException("Líder no encontrado con matrícula: " + grupoDTO.getMatriculaLider()));
+        validarAdministrador(grupoDTO.getMatriculaLider());
+    }
+
+    private void validarAdministrador(Integer matriculaAdministrador) {
+        usuarioRepository.findById(matriculaAdministrador)
+                .orElseThrow(() -> new RuntimeException("Administrador no encontrado con matrícula: " + matriculaAdministrador));
+    }
+
+    private void validarUsuariosExistentes(Set<Integer> matriculas) {
+        if (matriculas.isEmpty()) {
+            return;
+        }
+
+        Set<Integer> encontrados = new LinkedHashSet<>();
+        usuarioRepository.findAllById(matriculas)
+                .forEach(usuario -> encontrados.add(usuario.getMatricula()));
+
+        if (encontrados.size() != matriculas.size()) {
+            Integer faltante = matriculas.stream()
+                    .filter(m -> !encontrados.contains(m))
+                    .findFirst()
+                    .orElse(null);
+            throw new RuntimeException("Usuario no encontrado con matrícula: " + faltante);
+        }
+    }
+
+    private void asegurarAdministradorComoIntegrante(Integer idGrupo, Integer matriculaAdministrador) {
+        GrupoIntegranteId id = new GrupoIntegranteId(idGrupo, matriculaAdministrador);
+        if (!grupoIntegranteRepository.existsById(id)) {
+            grupoIntegranteRepository.save(new GrupoIntegrante(idGrupo, matriculaAdministrador));
+        }
     }
 
     private GrupoDTO convertirADTO(Grupo grupo) {
-        String nombreLider = usuarioRepository.findById(grupo.getMatriculaLider())
+        String nombreAdministrador = usuarioRepository.findById(grupo.getMatriculaLider())
                 .map(this::construirNombreCompleto)
                 .orElse(null);
 
-        return new GrupoDTO(grupo.getIdGrupo(), grupo.getNombreGrupo(), grupo.getMatriculaLider(), nombreLider);
+        return new GrupoDTO(
+                grupo.getIdGrupo(),
+                grupo.getNombreGrupo(),
+                grupo.getMatriculaLider(),
+                nombreAdministrador
+        );
     }
 
     private GrupoDetalleDTO convertirADetalleDTO(Grupo grupo) {
+        Integer matriculaAdministrador = grupo.getMatriculaLider();
         LinkedHashMap<Integer, GrupoIntegranteDTO> integrantesPorMatricula = new LinkedHashMap<>();
 
-        List<GrupoIntegrante> integrantes = grupoIntegranteRepository.findByIdGrupo(grupo.getIdGrupo());
+        List<GrupoIntegrante> integrantes = grupoIntegranteRepository.findByIdGrupoOrderByMatriculaAsc(grupo.getIdGrupo());
         for (GrupoIntegrante integrante : integrantes) {
-            Usuario usuario = integrante.getUsuario();
-            if (usuario == null) {
-                usuario = usuarioRepository.findById(integrante.getMatricula()).orElse(null);
-            }
-
-            String nombreCompleto = usuario != null ? construirNombreCompleto(usuario) : "MAT-" + integrante.getMatricula();
-            String nombreRolSistema = (usuario != null && usuario.getRol() != null) ? usuario.getRol().getNombreRol() : null;
-            String fotoPerfil = usuario != null ? usuario.getFotoPerfil() : null;
-            String rolGrupo = normalizarRolGrupo(integrante.getRolGrupo());
-
             integrantesPorMatricula.put(
                     integrante.getMatricula(),
-                    new GrupoIntegranteDTO(integrante.getMatricula(), nombreCompleto, nombreRolSistema, rolGrupo, fotoPerfil)
+                    construirIntegranteDTO(integrante.getMatricula(), matriculaAdministrador)
             );
         }
 
-        GrupoIntegranteDTO liderIntegrante = integrantesPorMatricula.get(grupo.getMatriculaLider());
-        if (liderIntegrante != null) {
-            liderIntegrante.setRolGrupo("LIDER_SUPREMO");
-        } else {
-            Usuario lider = usuarioRepository.findById(grupo.getMatriculaLider()).orElse(null);
-            if (lider != null) {
-                integrantesPorMatricula.put(
-                        lider.getMatricula(),
-                        new GrupoIntegranteDTO(
-                                lider.getMatricula(),
-                                construirNombreCompleto(lider),
-                                lider.getRol() != null ? lider.getRol().getNombreRol() : null,
-                                "LIDER_SUPREMO",
-                                lider.getFotoPerfil()
-                        )
-                );
-            }
+        if (!integrantesPorMatricula.containsKey(matriculaAdministrador)) {
+            integrantesPorMatricula.put(
+                    matriculaAdministrador,
+                    construirIntegranteDTO(matriculaAdministrador, matriculaAdministrador)
+            );
         }
 
         List<GrupoIntegranteDTO> integrantesOrdenados = new ArrayList<>(integrantesPorMatricula.values());
         integrantesOrdenados.sort(
-                Comparator.comparingInt((GrupoIntegranteDTO integrante) -> prioridadRolGrupo(integrante.getRolGrupo()))
+                Comparator.comparing(
+                                (GrupoIntegranteDTO integranteDTO) -> !Boolean.TRUE.equals(integranteDTO.getAdministrador())
+                        )
                         .thenComparing(
-                                integrante -> tieneTexto(integrante.getNombreCompleto()) ? integrante.getNombreCompleto() : "",
+                                integranteDTO -> tieneTexto(integranteDTO.getNombreCompleto()) ? integranteDTO.getNombreCompleto() : "",
                                 String.CASE_INSENSITIVE_ORDER
                         )
         );
 
-        String nombreLider = usuarioRepository.findById(grupo.getMatriculaLider())
-                .map(this::construirNombreCompleto)
+        String nombreAdministrador = integrantesOrdenados.stream()
+                .filter(integranteDTO -> Boolean.TRUE.equals(integranteDTO.getAdministrador()))
+                .map(GrupoIntegranteDTO::getNombreCompleto)
+                .filter(this::tieneTexto)
+                .findFirst()
                 .orElse(null);
-
-        String nombreCapitan = obtenerNombresPorRol(integrantesOrdenados, "CAPITAN");
-        String nombreAdministrador = obtenerNombresPorRol(integrantesOrdenados, "ADMINISTRADOR");
 
         return new GrupoDetalleDTO(
                 grupo.getIdGrupo(),
                 grupo.getNombreGrupo(),
-                grupo.getMatriculaLider(),
-                nombreLider,
-                nombreCapitan,
+                matriculaAdministrador,
                 nombreAdministrador,
                 integrantesOrdenados
         );
     }
 
-    private String obtenerNombresPorRol(List<GrupoIntegranteDTO> integrantes, String rolGrupoObjetivo) {
-        String nombres = integrantes.stream()
-                .filter(integrante -> rolGrupoObjetivo.equals(normalizarRolGrupo(integrante.getRolGrupo())))
-                .map(GrupoIntegranteDTO::getNombreCompleto)
-                .filter(this::tieneTexto)
-                .distinct()
-                .collect(Collectors.joining(", "));
-        return tieneTexto(nombres) ? nombres : null;
+    private GrupoIntegranteDTO construirIntegranteDTO(Integer matricula, Integer matriculaAdministrador) {
+        Usuario usuario = usuarioRepository.findById(matricula).orElse(null);
+        String nombreCompleto = usuario != null ? construirNombreCompleto(usuario) : "MAT-" + matricula;
+        String nombreRolSistema = (usuario != null && usuario.getRol() != null) ? usuario.getRol().getNombreRol() : null;
+        String fotoPerfil = usuario != null ? usuario.getFotoPerfil() : null;
+        boolean esAdministrador = matriculaAdministrador != null && matriculaAdministrador.equals(matricula);
+
+        return new GrupoIntegranteDTO(matricula, nombreCompleto, nombreRolSistema, fotoPerfil, esAdministrador);
     }
 
     private String construirNombreCompleto(Usuario usuario) {
@@ -245,36 +321,6 @@ public class GrupoServiceImpl implements GrupoService {
             nombreCompleto.append(usuario.getApellidoMaternoUsuario().trim());
         }
         return nombreCompleto.toString();
-    }
-
-    private String normalizarRolGrupo(String rolGrupo) {
-        if (!tieneTexto(rolGrupo)) {
-            return "MIEMBRO";
-        }
-
-        String rolNormalizado = rolGrupo.trim().toUpperCase();
-        switch (rolNormalizado) {
-            case "LIDER_SUPREMO":
-            case "CAPITAN":
-            case "ADMINISTRADOR":
-                return rolNormalizado;
-            default:
-                return "MIEMBRO";
-        }
-    }
-
-    private int prioridadRolGrupo(String rolGrupo) {
-        String rolNormalizado = normalizarRolGrupo(rolGrupo);
-        if ("LIDER_SUPREMO".equals(rolNormalizado)) {
-            return 0;
-        }
-        if ("CAPITAN".equals(rolNormalizado)) {
-            return 1;
-        }
-        if ("ADMINISTRADOR".equals(rolNormalizado)) {
-            return 2;
-        }
-        return 3;
     }
 
     private boolean tieneTexto(String valor) {

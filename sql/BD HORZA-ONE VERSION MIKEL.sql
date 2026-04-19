@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS expediente_digital (
 CREATE TABLE IF NOT EXISTS grupos (
   id_grupo INT PRIMARY KEY AUTO_INCREMENT,
   nombre_grupo VARCHAR(100) NOT NULL,
-  matricula_lider INT NOT NULL COMMENT 'Usuario existente que lidera el grupo',
+  matricula_lider INT NOT NULL COMMENT 'Usuario administrador del grupo',
   FOREIGN KEY (matricula_lider) REFERENCES usuarios(matricula) ON DELETE RESTRICT,
   UNIQUE KEY uk_nombre_grupo (nombre_grupo),
   INDEX idx_grupo_lider (matricula_lider)
@@ -300,11 +300,12 @@ CREATE TABLE IF NOT EXISTS grupos (
 CREATE TABLE IF NOT EXISTS grupo_integrantes (
   id_grupo INT NOT NULL,
   matricula INT NOT NULL,
-  rol_grupo ENUM('LIDER_SUPREMO', 'CAPITAN', 'ADMINISTRADOR', 'MIEMBRO') NOT NULL DEFAULT 'MIEMBRO',
   PRIMARY KEY (id_grupo, matricula),
   FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo) ON DELETE CASCADE,
   FOREIGN KEY (matricula) REFERENCES usuarios(matricula) ON DELETE CASCADE,
-  INDEX idx_grupo_integrantes_matricula (matricula),
-  INDEX idx_grupo_integrantes_rol (rol_grupo)
+  INDEX idx_grupo_integrantes_matricula (matricula)
 ) ENGINE=InnoDB;
+
+-- Compatibilidad (si vienes de un esquema anterior):
+-- ALTER TABLE grupo_integrantes DROP COLUMN rol_grupo;
 

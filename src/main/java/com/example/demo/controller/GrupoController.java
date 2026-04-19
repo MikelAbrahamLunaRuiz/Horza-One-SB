@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.GrupoDTO;
 import com.example.demo.dto.GrupoDetalleDTO;
+import com.example.demo.dto.GrupoIntegrantesRequest;
 import com.example.demo.service.GrupoService;
 
 @RestController
@@ -82,6 +84,33 @@ public class GrupoController {
     public ResponseEntity<List<GrupoDetalleDTO>> obtenerDetallePorUsuario(@PathVariable Integer matriculaUsuario) {
         try {
             return ResponseEntity.ok(grupoService.obtenerDetallePorUsuario(matriculaUsuario));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/detalle")
+    public ResponseEntity<List<GrupoDetalleDTO>> obtenerDetalleCompleto() {
+        return ResponseEntity.ok(grupoService.obtenerDetalleCompleto());
+    }
+
+    @GetMapping("/{idGrupo}/detalle")
+    public ResponseEntity<GrupoDetalleDTO> obtenerDetallePorGrupo(@PathVariable Integer idGrupo) {
+        try {
+            return ResponseEntity.ok(grupoService.obtenerDetallePorGrupo(idGrupo));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/{idGrupo}/integrantes")
+    public ResponseEntity<GrupoDetalleDTO> actualizarIntegrantes(
+            @PathVariable Integer idGrupo,
+            @RequestBody GrupoIntegrantesRequest request
+    ) {
+        try {
+            List<Integer> matriculas = request != null ? request.getMatriculas() : Collections.emptyList();
+            return ResponseEntity.ok(grupoService.actualizarIntegrantes(idGrupo, matriculas));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
