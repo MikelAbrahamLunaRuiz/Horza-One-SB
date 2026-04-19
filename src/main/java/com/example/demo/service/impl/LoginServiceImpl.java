@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
+import com.example.demo.model.Tutor;
 import com.example.demo.model.Usuario;
 import com.example.demo.respository.PermisoPersonalizadoRepository;
+import com.example.demo.respository.TutorRepository;
 import com.example.demo.respository.UsuarioRepository;
 import com.example.demo.service.LoginService;
 
@@ -20,6 +22,9 @@ public class LoginServiceImpl implements LoginService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private TutorRepository tutorRepository;
+
+    @Autowired
     private PermisoPersonalizadoRepository permisoPersonalizadoRepository;
 
     @Override
@@ -28,88 +33,93 @@ public class LoginServiceImpl implements LoginService {
         System.out.println("Correo recibido: [" + loginRequest.getCorreo() + "]");
         System.out.println("Contraseña recibida: [" + loginRequest.getContrasena() + "]");
         
-        // Primero verificar si el correo existe
-        Optional<Usuario> usuarioPorCorreo = usuarioRepository.findByCorreo(loginRequest.getCorreo());
-
-        if (!usuarioPorCorreo.isPresent()) {
-            System.out.println("❌ Correo NO encontrado en BD");
-            // El correo no existe en la base de datos
-            return new LoginResponse(
-                    false,
-                    "El correo no está registrado en el sistema",
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-            );
-        }
-        
-        Usuario usuarioEncontrado = usuarioPorCorreo.get();
-        System.out.println("✅ Correo encontrado - Matrícula: " + usuarioEncontrado.getMatricula());
-        System.out.println("Contraseña en BD: [" + usuarioEncontrado.getContrasena() + "]");
-        System.out.println("Estado: " + usuarioEncontrado.getActivo());
-
-        // El correo existe, ahora verificar la contraseña
         Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreoAndContrasena(
                 loginRequest.getCorreo(),
                 loginRequest.getContrasena()
         );
 
         if (usuarioOpt.isPresent()) {
-            System.out.println("✅ Contraseña CORRECTA");
             Usuario usuario = usuarioOpt.get();
 
             // Verificar si el usuario está activo
             if (!"Activo".equals(usuario.getActivo())) {
                 System.out.println("❌ Usuario INACTIVO");
-                return new LoginResponse(
-                        false,
-                        "Tu cuenta está inactiva. Contacta al administrador",
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                );
+                return respuestaError("Tu cuenta está inactiva. Contacta al administrador");
             }
 
             String nombreCompleto = usuario.getNombreUsuario() + " " +
                     usuario.getApellidoPaternoUsuario() + " " +
                     usuario.getApellidoMaternoUsuario();
 
+            String tipoPermiso = usuario.getRol() != null ? usuario.getRol().getTipoPermiso() : null;
             List<String> accionesAdmin = null;
-            if (usuario.getRol() != null && "ADMIN".equalsIgnoreCase(usuario.getRol().getTipoPermiso())) {
+            if ("ADMIN".equalsIgnoreCase(tipoPermiso)) {
                 accionesAdmin = permisoPersonalizadoRepository.findNombresAccionesByMatricula(usuario.getMatricula());
             }
 
             System.out.println("✅ LOGIN EXITOSO - " + nombreCompleto);
-            return new LoginResponse(
-                    true,
-                    "Login exitoso",
-                    usuario.getMatricula(),
-                    nombreCompleto,
-                    usuario.getRol().getNombreRol(),
-                    usuario.getRol().getIdRol(),
-                    usuario.getRol().getTipoPermiso(),
-                    accionesAdmin,
-                    usuario.getFotoPerfil()
-            );
-        } else {
-            System.out.println("❌ Contraseña INCORRECTA");
-            // El correo existe pero la contraseña es incorrecta
-            return new LoginResponse(
-                    false,
-                    "La contraseña es incorrecta",
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-            );
+            LoginResponse respuesta = new LoginResponse();
+            respuesta.setSuccess(true);
+            respuesta.setMensaje("Login exitoso");
+            respuesta.setMatricula(usuario.getMatricula());
+            respuesta.setNombreCompleto(nombreCompleto);
+            respuesta.setNombreRol(usuario.getRol() != null ? usuario.getRol().getNombreRol() : null);
+            respuesta.setIdRol(usuario.getRol() != null ? usuario.getRol().getIdRol() : null);
+            respuesta.setTipoPermiso(tipoPermiso);
+            respuesta.setAccionesAdmin(accionesAdmin);
+            respuesta.setFotoPerfil(usuario.getFotoPerfil());
+            respuesta.setTipoCuenta("USUARIO");
+            respuesta.setIdTutor(null);
+            return respuesta;
         }
+
+        Optional<Tutor> tutorOpt = tutorRepository.findByCorreoAndContrasenia(
+                loginRequest.getCorreo(),
+                loginRequest.getContrasena()
+        );
+        if (tutorOpt.isPresent()) {
+            Tutor tutor = tutorOpt.get();
+            System.out.println("✅ LOGIN EXITOSO TUTOR - ID: " + tutor.getIdTutor());
+            LoginResponse respuesta = new LoginResponse();
+            respuesta.setSuccess(true);
+            respuesta.setMensaje("Login exitoso");
+            respuesta.setMatricula(null);
+            respuesta.setNombreCompleto(tutor.getNombre());
+            respuesta.setNombreRol("Tutor");
+            respuesta.setIdRol(null);
+            respuesta.setTipoPermiso("TUTOR");
+            respuesta.setAccionesAdmin(null);
+            respuesta.setFotoPerfil(null);
+            respuesta.setTipoCuenta("TUTOR");
+            respuesta.setIdTutor(tutor.getIdTutor());
+            return respuesta;
+        }
+
+        boolean correoEnUsuarios = usuarioRepository.findByCorreo(loginRequest.getCorreo()).isPresent();
+        boolean correoEnTutores = tutorRepository.findByCorreo(loginRequest.getCorreo()).isPresent();
+
+        if (correoEnUsuarios || correoEnTutores) {
+            System.out.println("❌ Contraseña INCORRECTA");
+            return respuestaError("La contraseña es incorrecta");
+        }
+
+        System.out.println("❌ Correo NO encontrado en BD");
+        return respuestaError("El correo no está registrado en el sistema");
+    }
+
+    private LoginResponse respuestaError(String mensaje) {
+        LoginResponse respuesta = new LoginResponse();
+        respuesta.setSuccess(false);
+        respuesta.setMensaje(mensaje);
+        respuesta.setMatricula(null);
+        respuesta.setNombreCompleto(null);
+        respuesta.setNombreRol(null);
+        respuesta.setIdRol(null);
+        respuesta.setTipoPermiso(null);
+        respuesta.setAccionesAdmin(null);
+        respuesta.setFotoPerfil(null);
+        respuesta.setTipoCuenta(null);
+        respuesta.setIdTutor(null);
+        return respuesta;
     }
 }

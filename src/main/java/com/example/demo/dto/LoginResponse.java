@@ -19,6 +19,8 @@ public class LoginResponse {
     private String tipoPermiso;
     private List<String> accionesAdmin;
     private String fotoPerfil;
+    private String tipoCuenta;
+    private Integer idTutor;
 
     public LoginResponse() {
     }
@@ -116,5 +118,21 @@ public class LoginResponse {
 
     public void setFotoPerfil(String fotoPerfil) {
         this.fotoPerfil = fotoPerfil;
+    }
+
+    public String getTipoCuenta() {
+        return tipoCuenta;
+    }
+
+    public void setTipoCuenta(String tipoCuenta) {
+        this.tipoCuenta = tipoCuenta;
+    }
+
+    public Integer getIdTutor() {
+        return idTutor;
+    }
+
+    public void setIdTutor(Integer idTutor) {
+        this.idTutor = idTutor;
     }
 }

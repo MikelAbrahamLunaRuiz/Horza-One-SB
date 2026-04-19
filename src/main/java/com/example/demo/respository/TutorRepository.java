@@ -10,4 +10,5 @@ import com.example.demo.model.Tutor;
 @Repository
 public interface TutorRepository extends JpaRepository<Tutor, Integer> {
     Optional<Tutor> findByCorreo(String correo);
+    Optional<Tutor> findByCorreoAndContrasenia(String correo, String contrasenia);
 }

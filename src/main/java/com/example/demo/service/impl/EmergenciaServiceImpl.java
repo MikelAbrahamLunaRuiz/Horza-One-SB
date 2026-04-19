@@ -5,14 +5,18 @@ import com.example.demo.model.Area;
 import com.example.demo.model.Dispositivo;
 import com.example.demo.model.Registro;
 import com.example.demo.model.Usuario;
+import com.example.demo.model.VinculoTutor;
 import com.example.demo.respository.RegistroRepository;
 import com.example.demo.respository.UsuarioRepository;
+import com.example.demo.respository.VinculoTutorRepository;
 import com.example.demo.service.EmergenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class EmergenciaServiceImpl implements EmergenciaService {
@@ -23,36 +27,66 @@ public class EmergenciaServiceImpl implements EmergenciaService {
     @Autowired
     private RegistroRepository registroRepository;
 
+    @Autowired
+    private VinculoTutorRepository vinculoTutorRepository;
+
     @Override
     public List<UsuarioEmergenciaDTO> obtenerUsuariosDentro() {
         System.out.println("🚨 CONTROL DE EMERGENCIAS - Obteniendo usuarios dentro...");
-        
+        return obtenerUsuariosDentroFiltrados(null);
+    }
+
+    @Override
+    public List<UsuarioEmergenciaDTO> obtenerUsuariosDentroPorTutor(Integer idTutor) {
+        System.out.println("🚨 CONTROL DE EMERGENCIAS - Obteniendo usuarios dentro para tutor: " + idTutor);
+
+        List<VinculoTutor> vinculos = vinculoTutorRepository.findByIdTutor(idTutor);
+        Set<Integer> matriculasPermitidas = new HashSet<>();
+        for (VinculoTutor vinculo : vinculos) {
+            if (vinculo.getMatriculaEstudiante() != null) {
+                matriculasPermitidas.add(vinculo.getMatriculaEstudiante());
+            }
+        }
+
+        if (matriculasPermitidas.isEmpty()) {
+            System.out.println("ℹ️ Tutor sin estudiantes vinculados o sin usuarios dentro");
+            return new ArrayList<>();
+        }
+
+        return obtenerUsuariosDentroFiltrados(matriculasPermitidas);
+    }
+
+    private List<UsuarioEmergenciaDTO> obtenerUsuariosDentroFiltrados(Set<Integer> matriculasPermitidas) {
         List<UsuarioEmergenciaDTO> usuariosEmergencia = new ArrayList<>();
-        
+
         // Obtener todos los usuarios con estado "Dentro"
         List<Usuario> usuariosDentro = usuarioRepository.findByEstadoPresencia("Dentro");
         System.out.println("📋 Total de usuarios con estado 'Dentro': " + usuariosDentro.size());
-        
+
         for (Usuario usuario : usuariosDentro) {
+            if (matriculasPermitidas != null && !matriculasPermitidas.contains(usuario.getMatricula())) {
+                continue;
+            }
+
             // Buscar el último registro de ENTRADA del usuario
             Registro ultimoRegistro = registroRepository
                     .findTopByUsuario_MatriculaAndTipoRegistroOrderByFechaDescHoraDesc(
                             usuario.getMatricula(), "Entrada");
-            
+
             if (ultimoRegistro != null) {
                 // Obtener información del área directamente del registro
                 Area area = ultimoRegistro.getArea();
                 String nombreArea = (area != null) ? area.getNombreArea() : "Área Desconocida";
-                
+
                 // Obtener información del dispositivo directamente del registro
                 Dispositivo dispositivo = ultimoRegistro.getDispositivo();
                 String nombreDispositivo = (dispositivo != null) ? dispositivo.getNombreDispositivo() : "Dispositivo Desconocido";
-                
+
                 // Construir nombre completo
-                String nombreCompleto = usuario.getNombreUsuario() + " " + 
-                                      usuario.getApellidoPaternoUsuario() + " " + 
-                                      usuario.getApellidoMaternoUsuario();
-                
+                String nombreCompleto = usuario.getNombreUsuario() + " " +
+                        usuario.getApellidoPaternoUsuario() + " " +
+                        usuario.getApellidoMaternoUsuario();
+
                 // Crear DTO
                 UsuarioEmergenciaDTO dto = new UsuarioEmergenciaDTO(
                         usuario.getMatricula(),
@@ -62,19 +96,19 @@ public class EmergenciaServiceImpl implements EmergenciaService {
                         nombreDispositivo,
                         ultimoRegistro.getFecha().toString()
                 );
-                
+
                 usuariosEmergencia.add(dto);
-                
-                System.out.println("✅ Usuario: " + nombreCompleto + 
-                                 " | Área: " + nombreArea + 
-                                 " | Hora: " + ultimoRegistro.getHora() +
-                                 " | Dispositivo: " + nombreDispositivo);
+
+                System.out.println("✅ Usuario: " + nombreCompleto +
+                        " | Área: " + nombreArea +
+                        " | Hora: " + ultimoRegistro.getHora() +
+                        " | Dispositivo: " + nombreDispositivo);
             } else {
-                System.out.println("⚠️ Usuario " + usuario.getMatricula() + 
-                                 " tiene estado 'Dentro' pero no se encontró registro de entrada");
+                System.out.println("⚠️ Usuario " + usuario.getMatricula() +
+                        " tiene estado 'Dentro' pero no se encontró registro de entrada");
             }
         }
-        
+
         System.out.println("🚨 Total de usuarios en emergencia: " + usuariosEmergencia.size());
         return usuariosEmergencia;
     }
