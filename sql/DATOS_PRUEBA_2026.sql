@@ -10,6 +10,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DELETE FROM permisos_personalizados;
 DELETE FROM vinculo_tutor;
 DELETE FROM expediente_digital;
+DELETE FROM grupo_integrantes;
 DELETE FROM grupos;
 DELETE FROM registro;
 DELETE FROM usuarios_calendario;
@@ -940,6 +941,80 @@ INSERT INTO grupos (id_grupo, nombre_grupo, matricula_lider) VALUES
 (10, 'Programa Becarios 2026', 28);
 
 -- ============================================
+-- 15.1 INTEGRANTES DE GRUPOS (LÍDER, CAPITÁN, ADMINISTRADOR, MIEMBRO)
+-- ============================================
+INSERT INTO grupo_integrantes (id_grupo, matricula, rol_grupo) VALUES
+-- Grupo 1: Administracion Estrategica
+(1, 1, 'LIDER_SUPREMO'),
+(1, 2, 'CAPITAN'),
+(1, 3, 'ADMINISTRADOR'),
+(1, 11, 'MIEMBRO'),
+(1, 12, 'MIEMBRO'),
+
+-- Grupo 2: Supervision Operativa Norte
+(2, 4, 'LIDER_SUPREMO'),
+(2, 5, 'CAPITAN'),
+(2, 6, 'ADMINISTRADOR'),
+(2, 13, 'MIEMBRO'),
+(2, 14, 'MIEMBRO'),
+
+-- Grupo 3: Analitica Financiera Q2-2026
+(3, 9, 'LIDER_SUPREMO'),
+(3, 10, 'CAPITAN'),
+(3, 2, 'ADMINISTRADOR'),
+(3, 15, 'MIEMBRO'),
+(3, 16, 'MIEMBRO'),
+(3, 29, 'MIEMBRO'),
+
+-- Grupo 4: Control Escolar Matutino
+(4, 2, 'LIDER_SUPREMO'),
+(4, 11, 'CAPITAN'),
+(4, 12, 'ADMINISTRADOR'),
+(4, 20, 'MIEMBRO'),
+(4, 21, 'MIEMBRO'),
+
+-- Grupo 5: Tutorias Secundaria A
+(5, 5, 'LIDER_SUPREMO'),
+(5, 14, 'CAPITAN'),
+(5, 22, 'ADMINISTRADOR'),
+(5, 23, 'MIEMBRO'),
+(5, 24, 'MIEMBRO'),
+
+-- Grupo 6: Laboratorio TI Vespertino
+(6, 7, 'LIDER_SUPREMO'),
+(6, 18, 'CAPITAN'),
+(6, 26, 'ADMINISTRADOR'),
+(6, 27, 'MIEMBRO'),
+(6, 30, 'MIEMBRO'),
+
+-- Grupo 7: Brigada Operaciones Planta C
+(7, 18, 'LIDER_SUPREMO'),
+(7, 19, 'CAPITAN'),
+(7, 4, 'ADMINISTRADOR'),
+(7, 25, 'MIEMBRO'),
+(7, 28, 'MIEMBRO'),
+
+-- Grupo 8: Auditoria Interna Abril 2026
+(8, 3, 'LIDER_SUPREMO'),
+(8, 1, 'CAPITAN'),
+(8, 9, 'ADMINISTRADOR'),
+(8, 31, 'MIEMBRO'),
+
+-- Grupo 9: Expediente y Validaciones
+(9, 10, 'LIDER_SUPREMO'),
+(9, 12, 'CAPITAN'),
+(9, 13, 'ADMINISTRADOR'),
+(9, 17, 'MIEMBRO'),
+(9, 21, 'MIEMBRO'),
+
+-- Grupo 10: Programa Becarios 2026
+(10, 28, 'LIDER_SUPREMO'),
+(10, 29, 'CAPITAN'),
+(10, 30, 'ADMINISTRADOR'),
+(10, 20, 'MIEMBRO'),
+(10, 27, 'MIEMBRO');
+
+-- ============================================
 -- VERIFICACIÓN COMPLETA DEL SISTEMA DE TURNOS
 -- ============================================
 SELECT '╔════════════════════════════════════════════════════════════╗' AS '';
@@ -968,6 +1043,8 @@ UNION ALL SELECT 'Estudiantes con tutor:', COUNT(DISTINCT matricula_estudiante) 
 UNION ALL SELECT 'Documentos en expediente digital:', COUNT(*) FROM expediente_digital
 UNION ALL SELECT 'Usuarios con expediente:', COUNT(DISTINCT matricula) FROM expediente_digital
 UNION ALL SELECT 'Grupos con líder:', COUNT(*) FROM grupos
+UNION ALL SELECT 'Integrantes de grupos:', COUNT(*) FROM grupo_integrantes
+UNION ALL SELECT 'Usuarios con membresía de grupo:', COUNT(DISTINCT matricula) FROM grupo_integrantes
 UNION ALL SELECT '', ''
 UNION ALL SELECT '📅 SISTEMA DE CALENDARIOS (3 calendarios)', '==================='
 UNION ALL SELECT 'Calendarios Totales:', COUNT(*) FROM calendario

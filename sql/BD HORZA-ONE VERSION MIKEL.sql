@@ -294,4 +294,17 @@ CREATE TABLE IF NOT EXISTS grupos (
   INDEX idx_grupo_lider (matricula_lider)
 ) ENGINE=InnoDB;
 
+-- ===============================================
+-- 19. TABLA grupo_integrantes
+-- ===============================================
+CREATE TABLE IF NOT EXISTS grupo_integrantes (
+  id_grupo INT NOT NULL,
+  matricula INT NOT NULL,
+  rol_grupo ENUM('LIDER_SUPREMO', 'CAPITAN', 'ADMINISTRADOR', 'MIEMBRO') NOT NULL DEFAULT 'MIEMBRO',
+  PRIMARY KEY (id_grupo, matricula),
+  FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo) ON DELETE CASCADE,
+  FOREIGN KEY (matricula) REFERENCES usuarios(matricula) ON DELETE CASCADE,
+  INDEX idx_grupo_integrantes_matricula (matricula),
+  INDEX idx_grupo_integrantes_rol (rol_grupo)
+) ENGINE=InnoDB;
 

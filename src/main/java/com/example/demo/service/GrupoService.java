@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 
 import com.example.demo.dto.GrupoDTO;
+import com.example.demo.dto.GrupoDetalleDTO;
 
 public interface GrupoService {
 
@@ -17,4 +18,6 @@ public interface GrupoService {
     void eliminar(Integer idGrupo);
 
     List<GrupoDTO> obtenerPorLider(Integer matriculaLider);
+
+    List<GrupoDetalleDTO> obtenerDetallePorUsuario(Integer matriculaUsuario);
 }

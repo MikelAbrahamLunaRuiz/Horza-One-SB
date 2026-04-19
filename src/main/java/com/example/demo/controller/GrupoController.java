@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.GrupoDTO;
+import com.example.demo.dto.GrupoDetalleDTO;
 import com.example.demo.service.GrupoService;
 
 @RestController
@@ -72,6 +73,15 @@ public class GrupoController {
     public ResponseEntity<List<GrupoDTO>> obtenerPorLider(@PathVariable Integer matriculaLider) {
         try {
             return ResponseEntity.ok(grupoService.obtenerPorLider(matriculaLider));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/usuario/{matriculaUsuario}/detalle")
+    public ResponseEntity<List<GrupoDetalleDTO>> obtenerDetallePorUsuario(@PathVariable Integer matriculaUsuario) {
+        try {
+            return ResponseEntity.ok(grupoService.obtenerDetallePorUsuario(matriculaUsuario));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
