@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -50,7 +52,8 @@ public class ChatbotServiceImpl implements ChatbotService {
 
     @Override
     public String responder(String pregunta) {
-        if (apiKey == null || apiKey.isBlank()) {
+        String key = (apiKey != null) ? apiKey.trim() : "";
+        if (key.isBlank()) {
             log.warn("GEMINI_API_KEY no configurada — chatbot no disponible");
             return "El asistente no está disponible en este momento. Contacta al administrador del sistema.";
         }
@@ -74,7 +77,7 @@ public class ChatbotServiceImpl implements ChatbotService {
 
             ResponseEntity<Map> response = restTemplate.postForEntity(
                     GEMINI_URL, request, Map.class,
-                    Map.of("model", model, "apiKey", apiKey)
+                    Map.of("model", model, "apiKey", key)
             );
 
             @SuppressWarnings("unchecked")
@@ -89,8 +92,20 @@ public class ChatbotServiceImpl implements ChatbotService {
 
             return (String) parts.get(0).get("text");
 
+        } catch (HttpClientErrorException e) {
+            log.error("Gemini API error del cliente {} — body: {}", e.getStatusCode(), e.getResponseBodyAsString());
+            if (e.getStatusCode().value() == 400) {
+                return "Solicitud inválida al asistente. Intenta con una pregunta diferente.";
+            }
+            if (e.getStatusCode().value() == 403) {
+                return "API Key de Gemini inválida o sin permisos. Contacta al administrador.";
+            }
+            return "El asistente no pudo procesar la consulta (" + e.getStatusCode().value() + "). Inténtalo de nuevo.";
+        } catch (HttpServerErrorException e) {
+            log.error("Gemini API error del servidor {} — body: {}", e.getStatusCode(), e.getResponseBodyAsString());
+            return "El servicio de IA tuvo un problema temporal. Inténtalo en unos minutos.";
         } catch (Exception e) {
-            log.error("Error al llamar Gemini API: {}", e.getMessage());
+            log.error("Error inesperado al llamar Gemini API [{}]: {}", e.getClass().getSimpleName(), e.getMessage());
             return "Ocurrió un error al procesar tu consulta. Por favor, inténtalo de nuevo más tarde.";
         }
     }
