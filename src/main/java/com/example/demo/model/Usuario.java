@@ -57,7 +57,9 @@ public class Usuario {
     @Column(name = "calle_usuario", length = 40)
     private String calleUsuario;
 
-    @Column(name = "contrasenia", length = 12)
+    // [SEGURIDAD] Longitud ampliada de 12 a 255 para almacenar hash BCrypt (~60 chars).
+    // CWE-521: Requisitos de contraseña débiles — antes limitaba a 12 chars, impidiendo contraseñas seguras.
+    @Column(name = "contrasenia", length = 255)
     private String contrasena;
 
     @Column(name = "foto_perfil", length = 255)

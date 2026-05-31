@@ -22,7 +22,8 @@ public class Tutor {
     @Column(name = "correo", nullable = false, length = 120)
     private String correo;
 
-    @Column(name = "contrasenia", nullable = false, length = 100)
+    // [SEGURIDAD] Longitud ampliada a 255 para almacenar hash BCrypt (~60 chars).
+    @Column(name = "contrasenia", nullable = false, length = 255)
     private String contrasenia;
 
     public Tutor() {

@@ -18,8 +18,22 @@ import com.example.demo.respository.CalendarioRepository;
 import com.example.demo.respository.RolRepository;
 import com.example.demo.respository.UsuarioCalendarioRepository;
 import com.example.demo.respository.UsuarioRepository;
+import com.example.demo.security.PasswordUtil;
 import com.example.demo.service.UsuarioService;
 
+/**
+ * SEGURIDAD - Gestión segura de contraseñas en operaciones CRUD de usuarios.
+ *
+ * CAMBIOS APLICADOS:
+ *   - crear():            La contraseña se hashea con BCrypt antes de persistir.
+ *   - actualizar():       Solo se hashea si viene una contraseña nueva en el DTO.
+ *   - eliminarConValidacion(): Comparación con BCrypt (migracion transparente via PasswordUtil).
+ *   - cambiarContrasena(): Verifica con BCrypt y guarda el nuevo hash.
+ *
+ * VULNERABILIDADES MITIGADAS:
+ *   CWE-256: Almacenamiento en texto plano.
+ *   CWE-916: Uso de hash inadecuado.
+ */
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
@@ -28,12 +42,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private RolRepository rolRepository;
-    
+
     @Autowired
     private CalendarioRepository calendarioRepository;
-    
+
     @Autowired
     private UsuarioCalendarioRepository usuarioCalendarioRepository;
+
+    @Autowired
+    private PasswordUtil passwordUtil;
 
     @Override
     public List<UsuarioDTO> obtenerTodos() {
@@ -58,11 +75,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         
         // Crear el usuario
         Usuario usuario = convertirAEntidad(usuarioDTO);
-        
+
+        // [SEGURIDAD] Hashear contraseña con BCrypt antes de persistir
+        if (usuario.getContrasena() != null && !usuario.getContrasena().isBlank()
+                && !passwordUtil.esHashBcrypt(usuario.getContrasena())) {
+            usuario.setContrasena(passwordUtil.hashear(usuario.getContrasena()));
+        }
+
         // IMPORTANTE: Asegurar que estado_presencia se inicialice correctamente
         if (usuario.getEstadoPresencia() == null || usuario.getEstadoPresencia().isEmpty()) {
             usuario.setEstadoPresencia("Fuera");
-            System.out.println("✅ Estado de presencia inicializado a 'Fuera' para nuevo usuario: " + usuario.getMatricula());
         }
         
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
@@ -111,9 +133,10 @@ public class UsuarioServiceImpl implements UsuarioService {
             usuario.setFotoPerfil(usuarioDTO.getFotoPerfil());
         }
         
-        // Solo actualizar contraseña si viene en el DTO (no null y no vacía)
-        if (usuarioDTO.getContrasena() != null && !usuarioDTO.getContrasena().isEmpty()) {
-            usuario.setContrasena(usuarioDTO.getContrasena());
+        // [SEGURIDAD] Solo actualizar contraseña si viene en el DTO, hasheando antes de persistir
+        if (usuarioDTO.getContrasena() != null && !usuarioDTO.getContrasena().isEmpty()
+                && !passwordUtil.esHashBcrypt(usuarioDTO.getContrasena())) {
+            usuario.setContrasena(passwordUtil.hashear(usuarioDTO.getContrasena()));
         }
 
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
@@ -134,9 +157,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         // Verificar que el administrador existe y su contraseña es correcta
         Usuario admin = usuarioRepository.findById(request.getMatriculaAdmin())
                 .orElseThrow(() -> new RuntimeException("Administrador no encontrado"));
-        
-        if (!admin.getContrasena().equals(request.getContrasenaAdmin())) {
-            return false; // Contraseña incorrecta
+
+        // [SEGURIDAD] Comparar con BCrypt (soporta también contraseñas legado en texto plano)
+        if (!passwordUtil.verificar(request.getContrasenaAdmin(), admin.getContrasena())) {
+            return false;
         }
         
         // Verificar que el admin tiene rol de administrador (id_rol = 1)
@@ -154,11 +178,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findById(request.getMatricula())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!usuario.getContrasena().equals(request.getContrasenaActual())) {
+        // [SEGURIDAD] Verificar contraseña actual con BCrypt (soporta migración desde texto plano)
+        if (!passwordUtil.verificar(request.getContrasenaActual(), usuario.getContrasena())) {
             return false;
         }
 
-        usuario.setContrasena(request.getContrasenaNueva());
+        // [SEGURIDAD] Guardar nueva contraseña hasheada con BCrypt
+        usuario.setContrasena(passwordUtil.hashear(request.getContrasenaNueva()));
         usuarioRepository.save(usuario);
         return true;
     }
