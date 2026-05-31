@@ -18,8 +18,7 @@ public class ChatbotServiceImpl implements ChatbotService {
 
     private static final Logger log = LoggerFactory.getLogger(ChatbotServiceImpl.class);
 
-    private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}";
+    private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
     private static final String SYSTEM_PROMPT = """
             Eres el asistente virtual de Horza-One, un sistema de control de acceso y asistencia escolar.
@@ -42,10 +41,10 @@ public class ChatbotServiceImpl implements ChatbotService {
             Si te preguntan algo no relacionado con el sistema escolar, redirige la conversación de forma educada.
             """;
 
-    @Value("${gemini.api.key:}")
+    @Value("${groq.api.key:}")
     private String apiKey;
 
-    @Value("${gemini.model:gemini-2.0-flash}")
+    @Value("${groq.model:llama-3.3-70b-versatile}")
     private String model;
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -54,58 +53,51 @@ public class ChatbotServiceImpl implements ChatbotService {
     public String responder(String pregunta) {
         String key = (apiKey != null) ? apiKey.trim() : "";
         if (key.isBlank()) {
-            log.warn("GEMINI_API_KEY no configurada — chatbot no disponible");
+            log.warn("GROQ_API_KEY no configurada — chatbot no disponible");
             return "El asistente no está disponible en este momento. Contacta al administrador del sistema.";
         }
 
         try {
             Map<String, Object> body = Map.of(
-                    "system_instruction", Map.of(
-                            "parts", List.of(Map.of("text", SYSTEM_PROMPT))
+                    "model", model,
+                    "messages", List.of(
+                            Map.of("role", "system", "content", SYSTEM_PROMPT),
+                            Map.of("role", "user", "content", pregunta)
                     ),
-                    "contents", List.of(Map.of(
-                            "role", "user",
-                            "parts", List.of(Map.of("text", pregunta))
-                    )),
-                    "generationConfig", Map.of("maxOutputTokens", 600)
+                    "max_tokens", 600
             );
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(key);
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
-            ResponseEntity<Map> response = restTemplate.postForEntity(
-                    GEMINI_URL, request, Map.class,
-                    Map.of("model", model, "apiKey", key)
-            );
+            ResponseEntity<Map> response = restTemplate.postForEntity(GROQ_URL, request, Map.class);
 
             @SuppressWarnings("unchecked")
-            List<Map<String, Object>> candidates =
-                    (List<Map<String, Object>>) response.getBody().get("candidates");
+            List<Map<String, Object>> choices =
+                    (List<Map<String, Object>>) response.getBody().get("choices");
 
             @SuppressWarnings("unchecked")
-            Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
+            Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
 
-            @SuppressWarnings("unchecked")
-            List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
-
-            return (String) parts.get(0).get("text");
+            return (String) message.get("content");
 
         } catch (HttpClientErrorException e) {
-            log.error("Gemini API error del cliente {} — body: {}", e.getStatusCode(), e.getResponseBodyAsString());
-            if (e.getStatusCode().value() == 400) {
-                return "Solicitud inválida al asistente. Intenta con una pregunta diferente.";
+            log.error("Groq API error del cliente {} — body: {}", e.getStatusCode(), e.getResponseBodyAsString());
+            if (e.getStatusCode().value() == 401) {
+                return "API Key inválida o sin permisos. Contacta al administrador.";
             }
-            if (e.getStatusCode().value() == 403) {
-                return "API Key de Gemini inválida o sin permisos. Contacta al administrador.";
+            if (e.getStatusCode().value() == 429) {
+                return "Demasiadas consultas al asistente. Espera unos minutos e inténtalo de nuevo.";
             }
             return "El asistente no pudo procesar la consulta (" + e.getStatusCode().value() + "). Inténtalo de nuevo.";
         } catch (HttpServerErrorException e) {
-            log.error("Gemini API error del servidor {} — body: {}", e.getStatusCode(), e.getResponseBodyAsString());
+            log.error("Groq API error del servidor {} — body: {}", e.getStatusCode(), e.getResponseBodyAsString());
             return "El servicio de IA tuvo un problema temporal. Inténtalo en unos minutos.";
         } catch (Exception e) {
-            log.error("Error inesperado al llamar Gemini API [{}]: {}", e.getClass().getSimpleName(), e.getMessage());
+            log.error("Error inesperado al llamar Groq API [{}]: {}", e.getClass().getSimpleName(), e.getMessage());
             return "Ocurrió un error al procesar tu consulta. Por favor, inténtalo de nuevo más tarde.";
         }
     }
