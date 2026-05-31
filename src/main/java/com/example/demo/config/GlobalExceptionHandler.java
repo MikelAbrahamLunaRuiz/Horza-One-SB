@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -52,6 +53,14 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return respuesta(HttpStatus.BAD_REQUEST, "Datos de entrada inválidos", errores);
+    }
+
+    /** Método HTTP no soportado (p.ej. GET en un endpoint que solo acepta POST) */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Map<String, Object>> manejarMetodoNoSoportado(
+            HttpRequestMethodNotSupportedException ex) {
+        return respuesta(HttpStatus.METHOD_NOT_ALLOWED,
+                "Método HTTP no permitido: " + ex.getMethod(), null);
     }
 
     /** Parámetros de tipo incorrecto en la URL (p.ej. /api/usuarios/abc en lugar de número) */
