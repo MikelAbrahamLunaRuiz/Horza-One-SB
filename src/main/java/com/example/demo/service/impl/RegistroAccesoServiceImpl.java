@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,9 +99,10 @@ public class RegistroAccesoServiceImpl implements RegistroAccesoService {
                         return bitacoraRepository.save(nuevaBitacora);
                     });
 
-            // 5. Obtener la hora y fecha actual
-            LocalDate fechaActual = LocalDate.now();
-            LocalTime horaActual = LocalTime.now();
+            // 5. Obtener la hora y fecha actual en zona horaria de México
+            ZoneId zonaMexico = ZoneId.of("America/Mexico_City");
+            LocalDate fechaActual = LocalDate.now(zonaMexico);
+            LocalTime horaActual = LocalTime.now(zonaMexico);
             
             // 6. VALIDACIÓN DE SEGURIDAD: Verificar último registro del usuario
             ValidacionSeguridadResult validacionSeguridad = validarSeguridadAcceso(
@@ -182,10 +184,7 @@ public class RegistroAccesoServiceImpl implements RegistroAccesoService {
             bitacoraRepository.save(bitacora);
 
             // 15. Generar ID único para el registro
-            Integer nuevoIdRegistro = registroRepository.findAll().stream()
-                    .mapToInt(Registro::getIdRegistro)
-                    .max()
-                    .orElse(0) + 1;
+            Integer nuevoIdRegistro = registroRepository.findMaxId() + 1;
 
             // 16. Crear el registro
             Registro registro = new Registro();
@@ -272,6 +271,9 @@ public class RegistroAccesoServiceImpl implements RegistroAccesoService {
         registrosHoy.sort((r1, r2) -> r2.getHora().compareTo(r1.getHora()));
         Registro ultimoRegistro = registrosHoy.get(0);
         
+        if (ultimoRegistro.getArea() == null || dispositivoActual.getArea() == null) {
+            return new ValidacionSeguridadResult("Entrada", "Acceso permitido", false);
+        }
         Integer areaAnterior = ultimoRegistro.getArea().getIdArea();
         Integer areaActual = dispositivoActual.getArea().getIdArea();
         String tipoUltimoRegistro = ultimoRegistro.getTipoRegistro();
@@ -357,10 +359,7 @@ public class RegistroAccesoServiceImpl implements RegistroAccesoService {
             System.out.println("🤖 Generando SALIDA AUTOMÁTICA...");
             
             // Generar ID único para la salida automática
-            Integer nuevoIdSalidaAuto = registroRepository.findAll().stream()
-                    .mapToInt(Registro::getIdRegistro)
-                    .max()
-                    .orElse(0) + 1;
+            Integer nuevoIdSalidaAuto = registroRepository.findMaxId() + 1;
             
             // Crear registro de SALIDA AUTOMÁTICA del área anterior
             Registro salidaAutomatica = new Registro();
@@ -646,9 +645,10 @@ public class RegistroAccesoServiceImpl implements RegistroAccesoService {
     }
 
     private RegistroDTO convertirADTO(Registro registro) {
-        String nombreCompleto = registro.getUsuario().getNombreUsuario() + " " + 
-                                registro.getUsuario().getApellidoPaternoUsuario() + " " + 
-                                registro.getUsuario().getApellidoMaternoUsuario();
+        String n1 = registro.getUsuario().getNombreUsuario() != null ? registro.getUsuario().getNombreUsuario() : "";
+        String n2 = registro.getUsuario().getApellidoPaternoUsuario() != null ? registro.getUsuario().getApellidoPaternoUsuario() : "";
+        String n3 = registro.getUsuario().getApellidoMaternoUsuario() != null ? registro.getUsuario().getApellidoMaternoUsuario() : "";
+        String nombreCompleto = (n1 + " " + n2 + " " + n3).trim();
         
         return new RegistroDTO(
                 registro.getIdRegistro(),

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.model.Registro;
@@ -29,6 +30,10 @@ public interface RegistroRepository extends JpaRepository<Registro, Integer> {
     Registro findTopByUsuario_MatriculaAndTipoRegistroOrderByFechaDescHoraDesc(Integer matricula, String tipoRegistro);
     Registro findTopByUsuario_MatriculaOrderByFechaDescHoraDesc(Integer matricula);
     
+    // Obtener el ID máximo actual (evita cargar todos los registros para generar un nuevo ID)
+    @Query("SELECT COALESCE(MAX(r.idRegistro), 0) FROM Registro r")
+    Integer findMaxId();
+
     // ========== MÉTODOS PARA GRÁFICAS Y ESTADÍSTICAS ==========
     
     /**

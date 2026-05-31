@@ -10,6 +10,8 @@ import com.example.demo.respository.RegistroRepository;
 import com.example.demo.respository.UsuarioRepository;
 import com.example.demo.respository.VinculoTutorRepository;
 import com.example.demo.service.EmergenciaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ import java.util.Set;
 
 @Service
 public class EmergenciaServiceImpl implements EmergenciaService {
+
+    private static final Logger log = LoggerFactory.getLogger(EmergenciaServiceImpl.class);
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -32,13 +36,13 @@ public class EmergenciaServiceImpl implements EmergenciaService {
 
     @Override
     public List<UsuarioEmergenciaDTO> obtenerUsuariosDentro() {
-        System.out.println("🚨 CONTROL DE EMERGENCIAS - Obteniendo usuarios dentro...");
+        log.info("EMERGENCIAS - Obteniendo todos los usuarios dentro");
         return obtenerUsuariosDentroFiltrados(null);
     }
 
     @Override
     public List<UsuarioEmergenciaDTO> obtenerUsuariosDentroPorTutor(Integer idTutor) {
-        System.out.println("🚨 CONTROL DE EMERGENCIAS - Obteniendo usuarios dentro para tutor: " + idTutor);
+        log.info("EMERGENCIAS - Obteniendo usuarios dentro para tutor ID: {}", idTutor);
 
         List<VinculoTutor> vinculos = vinculoTutorRepository.findByIdTutor(idTutor);
         Set<Integer> matriculasPermitidas = new HashSet<>();
@@ -49,7 +53,7 @@ public class EmergenciaServiceImpl implements EmergenciaService {
         }
 
         if (matriculasPermitidas.isEmpty()) {
-            System.out.println("ℹ️ Tutor sin estudiantes vinculados o sin usuarios dentro");
+            log.info("Tutor ID {} sin estudiantes vinculados o sin usuarios dentro", idTutor);
             return new ArrayList<>();
         }
 
@@ -61,7 +65,7 @@ public class EmergenciaServiceImpl implements EmergenciaService {
 
         // Obtener todos los usuarios con estado "Dentro"
         List<Usuario> usuariosDentro = usuarioRepository.findByEstadoPresencia("Dentro");
-        System.out.println("📋 Total de usuarios con estado 'Dentro': " + usuariosDentro.size());
+        log.info("Total usuarios con estado 'Dentro': {}", usuariosDentro.size());
 
         for (Usuario usuario : usuariosDentro) {
             if (matriculasPermitidas != null && !matriculasPermitidas.contains(usuario.getMatricula())) {
@@ -82,10 +86,11 @@ public class EmergenciaServiceImpl implements EmergenciaService {
                 Dispositivo dispositivo = ultimoRegistro.getDispositivo();
                 String nombreDispositivo = (dispositivo != null) ? dispositivo.getNombreDispositivo() : "Dispositivo Desconocido";
 
-                // Construir nombre completo
-                String nombreCompleto = usuario.getNombreUsuario() + " " +
-                        usuario.getApellidoPaternoUsuario() + " " +
-                        usuario.getApellidoMaternoUsuario();
+                // Construir nombre completo con null-safety
+                String n1 = usuario.getNombreUsuario() != null ? usuario.getNombreUsuario() : "";
+                String n2 = usuario.getApellidoPaternoUsuario() != null ? usuario.getApellidoPaternoUsuario() : "";
+                String n3 = usuario.getApellidoMaternoUsuario() != null ? usuario.getApellidoMaternoUsuario() : "";
+                String nombreCompleto = (n1 + " " + n2 + " " + n3).trim();
 
                 // Crear DTO
                 UsuarioEmergenciaDTO dto = new UsuarioEmergenciaDTO(
@@ -98,24 +103,19 @@ public class EmergenciaServiceImpl implements EmergenciaService {
                 );
 
                 usuariosEmergencia.add(dto);
-
-                System.out.println("✅ Usuario: " + nombreCompleto +
-                        " | Área: " + nombreArea +
-                        " | Hora: " + ultimoRegistro.getHora() +
-                        " | Dispositivo: " + nombreDispositivo);
+                log.info("Usuario en emergencia: {} | Área: {} | Dispositivo: {}", nombreCompleto, nombreArea, nombreDispositivo);
             } else {
-                System.out.println("⚠️ Usuario " + usuario.getMatricula() +
-                        " tiene estado 'Dentro' pero no se encontró registro de entrada");
+                log.warn("Usuario {} tiene estado 'Dentro' pero no tiene registro de entrada", usuario.getMatricula());
             }
         }
 
-        System.out.println("🚨 Total de usuarios en emergencia: " + usuariosEmergencia.size());
+        log.info("Total usuarios en emergencia reportados: {}", usuariosEmergencia.size());
         return usuariosEmergencia;
     }
 
     @Override
     public byte[] exportarUsuariosDentroExcel() throws Exception {
-        System.out.println("📊 EXPORTANDO USUARIOS A EXCEL...");
+        log.info("Exportando usuarios a Excel...");
         
         List<UsuarioEmergenciaDTO> usuarios = obtenerUsuariosDentro();
         
@@ -220,7 +220,7 @@ public class EmergenciaServiceImpl implements EmergenciaService {
         workbook.write(outputStream);
         workbook.close();
         
-        System.out.println("✅ Excel generado correctamente con " + usuarios.size() + " registros");
+        log.info("Excel generado con {} registros", usuarios.size());
         return outputStream.toByteArray();
     }
 }
