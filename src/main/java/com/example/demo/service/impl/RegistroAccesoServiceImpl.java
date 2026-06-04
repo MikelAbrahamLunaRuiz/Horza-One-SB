@@ -89,6 +89,7 @@ public class RegistroAccesoServiceImpl implements RegistroAccesoService {
             Bitacora bitacora = bitacoraRepository.findByUsuario(usuario)
                     .orElseGet(() -> {
                         Bitacora nuevaBitacora = new Bitacora();
+                        nuevaBitacora.setIdBitacora(bitacoraRepository.findMaxId() + 1);
                         nuevaBitacora.setUsuario(usuario);
                         nuevaBitacora.setNumEntradas(0);
                         nuevaBitacora.setNumInasistencias(0);

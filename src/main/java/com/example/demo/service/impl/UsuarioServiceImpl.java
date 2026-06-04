@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dto.BajaUsuarioRequest;
 import com.example.demo.dto.CambioContrasenaRequest;
 import com.example.demo.dto.UsuarioDTO;
+import com.example.demo.model.Bitacora;
 import com.example.demo.model.Calendario;
 import com.example.demo.model.Rol;
 import com.example.demo.model.Usuario;
 import com.example.demo.model.UsuarioCalendario;
 import com.example.demo.model.UsuarioCalendarioId;
+import com.example.demo.respository.BitacoraRepository;
 import com.example.demo.respository.CalendarioRepository;
 import com.example.demo.respository.RolRepository;
 import com.example.demo.respository.UsuarioCalendarioRepository;
@@ -48,6 +50,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioCalendarioRepository usuarioCalendarioRepository;
+
+    @Autowired
+    private BitacoraRepository bitacoraRepository;
 
     @Autowired
     private PasswordUtil passwordUtil;
@@ -88,7 +93,17 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
-        
+
+        // Crear bitácora inicial para el nuevo usuario
+        Bitacora bitacora = new Bitacora();
+        bitacora.setIdBitacora(bitacoraRepository.findMaxId() + 1);
+        bitacora.setUsuario(usuarioGuardado);
+        bitacora.setNumEntradas(0);
+        bitacora.setNumInasistencias(0);
+        bitacora.setNumRetardos(0);
+        bitacora.setNumEntradasAnticipadas(0);
+        bitacoraRepository.save(bitacora);
+
         // Si viene idCalendario, crear la relación en USUARIOS_CALENDARIO
         if (usuarioDTO.getIdCalendario() != null) {
             Calendario calendario = calendarioRepository.findById(usuarioDTO.getIdCalendario())
