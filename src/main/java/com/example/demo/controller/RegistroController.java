@@ -67,13 +67,7 @@ public class RegistroController {
     
     @PostMapping("/registrar-acceso")
     public ResponseEntity<RegistroAccesoResponse> registrarAcceso(@RequestBody RegistroAccesoRequest request) {
-        RegistroAccesoResponse response = registroAccesoService.registrarAcceso(request);
-        
-        if (response.isExito()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        return ResponseEntity.ok(registroAccesoService.registrarAcceso(request));
     }
     
     @GetMapping("/ultimos/{idDispositivo}")
