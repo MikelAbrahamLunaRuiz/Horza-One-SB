@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/emergencias")
+@org.springframework.web.bind.annotation.CrossOrigin(origins = "*")
 public class EmergenciaController {
 
     @Autowired
