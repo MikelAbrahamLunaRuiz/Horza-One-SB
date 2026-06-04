@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.RegistroAccesoRequest;
 import com.example.demo.dto.RegistroAccesoResponse;
@@ -71,7 +70,6 @@ public class RegistroAccesoServiceImpl implements RegistroAccesoService {
     private PermisoDiaRepository permisoDiaRepository;
 
     @Override
-    @Transactional
     public RegistroAccesoResponse registrarAcceso(RegistroAccesoRequest request) {
         try {
             // 1. Validar que el usuario exista
@@ -469,7 +467,8 @@ public class RegistroAccesoServiceImpl implements RegistroAccesoService {
             
             List<BloqueHorario> bloquesDelArea = asignacionesBloques.stream()
                 .map(BloqueDiaAsignacion::getBloqueHorario)
-                .filter(bloque -> bloque.getArea().getIdArea().equals(dispositivo.getArea().getIdArea()))
+                .filter(bloque -> bloque.getArea() != null &&
+                        bloque.getArea().getIdArea().equals(dispositivo.getArea().getIdArea()))
                 .collect(Collectors.toList());
             
             System.out.println("📋 Bloques encontrados para área " + dispositivo.getArea().getNombreArea() + ": " + bloquesDelArea.size());
