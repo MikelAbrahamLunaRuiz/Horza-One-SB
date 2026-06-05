@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -61,6 +62,14 @@ public class GlobalExceptionHandler {
             HttpRequestMethodNotSupportedException ex) {
         return respuesta(HttpStatus.METHOD_NOT_ALLOWED,
                 "Método HTTP no permitido: " + ex.getMethod(), null);
+    }
+
+    /** Ruta no encontrada (recurso estático o endpoint inexistente) */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> manejarRecursoNoEncontrado(
+            NoResourceFoundException ex) {
+        log.warn("Recurso no encontrado: {}", ex.getMessage());
+        return respuesta(HttpStatus.NOT_FOUND, "Recurso no encontrado", null);
     }
 
     /** Parámetros de tipo incorrecto en la URL (p.ej. /api/usuarios/abc en lugar de número) */

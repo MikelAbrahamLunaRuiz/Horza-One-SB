@@ -1581,3 +1581,330 @@ SELECT '' AS '';
 SELECT '════════════════════════════════════════════════════════════' AS '';
 SELECT '   🎯 SISTEMA CON BLOQUES DE 1 HORA - SIN TRASLAPES         ' AS '';
 SELECT '════════════════════════════════════════════════════════════' AS '';
+
+-- ============================================================
+-- BLOQUE EXTENDIDO: MAYO 8 - JUNIO 5, 2026
+-- Datos para gráficas mensuales y Control de Emergencia
+-- ============================================================
+INSERT INTO registro (id_registro, matricula, id_bitacora, id_dispositivo, id_area, tipo_registro, fecha, hora, observacion, estado_registro) VALUES
+
+-- ====== SEMANA 11 MAY (11-15 Mayo) ======
+-- Lunes 11 Mayo
+(1259, 9,  9,  301, 3, 'Entrada', '2026-05-11', '07:46:00', 'MIKEL - Inicio semana',     'Anticipado'),
+(1260, 10, 10, 301, 3, 'Entrada', '2026-05-11', '08:00:00', 'Ana - Lunes puntual',       'Puntual'),
+(1261, 6,  6,  201, 2, 'Entrada', '2026-05-11', '07:52:00', 'Sofia - TI matutino',       'Anticipado'),
+(1262, 4,  4,  401, 4, 'Entrada', '2026-05-11', '08:35:00', 'Carlos - Operaciones',      'Puntual'),
+(1263, 3,  3,  101, 1, 'Entrada', '2026-05-11', '08:00:00', 'Rafael - RH',               'Puntual'),
+(1264, 16, 16, 501, 5, 'Entrada', '2026-05-11', '14:02:00', 'Felipe - MKT nocturno',     'Puntual'),
+(1265, 18, 18, 401, 4, 'Entrada', '2026-05-11', '14:10:00', 'Gabriela - OPS nocturno',   'Retardo'),
+(1266, 19, 19, 201, 2, 'Entrada', '2026-05-11', '14:00:00', 'Hugo - TI nocturno',        'Puntual'),
+(1267, 9,  9,  301, 3, 'Salida',  '2026-05-11', '17:05:00', 'MIKEL - Salida',            'Puntual'),
+(1268, 10, 10, 301, 3, 'Salida',  '2026-05-11', '17:00:00', 'Ana - Salida',              'Puntual'),
+(1269, 6,  6,  201, 2, 'Salida',  '2026-05-11', '17:10:00', 'Sofia - Salida',            'Puntual'),
+(1270, 16, 16, 501, 5, 'Salida',  '2026-05-11', '21:00:00', 'Felipe - Cierre noche',     'Puntual'),
+(1271, 18, 18, 401, 4, 'Salida',  '2026-05-11', '21:05:00', 'Gabriela - Cierre noche',   'Puntual'),
+
+-- Martes 12 Mayo
+(1272, 9,  9,  301, 3, 'Entrada', '2026-05-12', '07:50:00', 'MIKEL - Martes anticipado', 'Anticipado'),
+(1273, 10, 10, 301, 3, 'Entrada', '2026-05-12', '08:07:00', 'Ana - Leve retardo',        'Retardo'),
+(1274, 7,  7,  202, 2, 'Entrada', '2026-05-12', '07:58:00', 'Miguel - TI',               'Puntual'),
+(1275, 12, 12, 102, 1, 'Entrada', '2026-05-12', '08:00:00', 'Pamela - RH',               'Puntual'),
+(1276, 15, 15, 301, 3, 'Entrada', '2026-05-12', '07:55:00', 'Sergio - FIN',              'Anticipado'),
+(1277, 22, 22, 301, 3, 'Entrada', '2026-05-12', '14:05:00', 'Monica - FIN nocturno',     'Puntual'),
+(1278, 21, 21, 101, 1, 'Entrada', '2026-05-12', '14:00:00', 'Diego - RH nocturno',       'Puntual'),
+(1279, 9,  9,  301, 3, 'Salida',  '2026-05-12', '17:08:00', 'MIKEL',                     'Puntual'),
+(1280, 10, 10, 301, 3, 'Salida',  '2026-05-12', '17:01:00', 'Ana',                       'Puntual'),
+(1281, 7,  7,  202, 2, 'Salida',  '2026-05-12', '17:00:00', 'Miguel',                    'Puntual'),
+(1282, 22, 22, 301, 3, 'Salida',  '2026-05-12', '21:00:00', 'Monica nocturno',           'Puntual'),
+
+-- Miercoles 13 Mayo
+(1283, 9,  9,  301, 3, 'Entrada', '2026-05-13', '07:44:00', 'MIKEL - Miercoles',         'Anticipado'),
+(1284, 2,  2,  101, 1, 'Entrada', '2026-05-13', '08:00:00', 'Maria - Admin RH',          'Puntual'),
+(1285, 8,  8,  301, 3, 'Entrada', '2026-05-13', '07:59:00', 'Veronica - FIN',            'Puntual'),
+(1286, 5,  5,  501, 5, 'Entrada', '2026-05-13', '08:10:00', 'Lucia - MKT',               'Retardo'),
+(1287, 13, 13, 401, 4, 'Entrada', '2026-05-13', '08:00:00', 'Roberto - OPS',             'Puntual'),
+(1288, 23, 23, 501, 5, 'Entrada', '2026-05-13', '14:03:00', 'Jorge - MKT nocturno',      'Puntual'),
+(1289, 26, 26, 401, 4, 'Entrada', '2026-05-13', '14:00:00', 'Adan - OPS nocturno',       'Puntual'),
+(1290, 9,  9,  301, 3, 'Salida',  '2026-05-13', '17:12:00', 'MIKEL',                     'Puntual'),
+(1291, 2,  2,  101, 1, 'Salida',  '2026-05-13', '17:00:00', 'Maria',                     'Puntual'),
+(1292, 23, 23, 501, 5, 'Salida',  '2026-05-13', '21:00:00', 'Jorge nocturno',            'Puntual'),
+
+-- Jueves 14 Mayo
+(1293, 9,  9,  301, 3, 'Entrada', '2026-05-14', '07:48:00', 'MIKEL - Jueves',            'Anticipado'),
+(1294, 10, 10, 301, 3, 'Entrada', '2026-05-14', '08:00:00', 'Ana - Jueves',              'Puntual'),
+(1295, 6,  6,  201, 2, 'Entrada', '2026-05-14', '07:55:00', 'Sofia - TI',                'Anticipado'),
+(1296, 14, 14, 501, 5, 'Entrada', '2026-05-14', '08:05:00', 'Lorena - MKT',              'Puntual'),
+(1297, 17, 17, 101, 1, 'Entrada', '2026-05-14', '14:00:00', 'Isabel - RH nocturno',      'Puntual'),
+(1298, 25, 25, 201, 2, 'Entrada', '2026-05-14', '14:08:00', 'Ricardo - TI nocturno',     'Retardo'),
+(1299, 9,  9,  301, 3, 'Salida',  '2026-05-14', '17:03:00', 'MIKEL',                     'Puntual'),
+(1300, 10, 10, 301, 3, 'Salida',  '2026-05-14', '17:00:00', 'Ana',                       'Puntual'),
+(1301, 17, 17, 101, 1, 'Salida',  '2026-05-14', '21:00:00', 'Isabel nocturno',           'Puntual'),
+
+-- Viernes 15 Mayo
+(1302, 1,  1,  101, 1, 'Entrada', '2026-05-15', '08:30:00', 'Juan Perez - Oficina RH',   'Puntual'),
+(1303, 11, 11, 102, 1, 'Entrada', '2026-05-15', '08:30:00', 'Juan Carlos - Oficina RH',  'Puntual'),
+(1304, 9,  9,  301, 3, 'Entrada', '2026-05-15', '07:43:00', 'MIKEL - Viernes anticipado','Anticipado'),
+(1305, 10, 10, 301, 3, 'Entrada', '2026-05-15', '08:00:00', 'Ana - Viernes',             'Puntual'),
+(1306, 3,  3,  101, 1, 'Entrada', '2026-05-15', '07:58:00', 'Rafael - Viernes',          'Puntual'),
+(1307, 1,  1,  101, 1, 'Salida',  '2026-05-15', '16:00:00', 'Juan Perez - Salida RH',    'Puntual'),
+(1308, 11, 11, 102, 1, 'Salida',  '2026-05-15', '16:00:00', 'Juan Carlos - Salida',      'Puntual'),
+(1309, 9,  9,  301, 3, 'Salida',  '2026-05-15', '17:06:00', 'MIKEL',                     'Puntual'),
+(1310, 10, 10, 301, 3, 'Salida',  '2026-05-15', '17:00:00', 'Ana',                       'Puntual'),
+
+-- ====== SEMANA 18 MAY (18-22 Mayo) ======
+-- Lunes 18 Mayo
+(1311, 9,  9,  301, 3, 'Entrada', '2026-05-18', '07:51:00', 'MIKEL - Inicio semana',     'Anticipado'),
+(1312, 10, 10, 301, 3, 'Entrada', '2026-05-18', '08:02:00', 'Ana - Lunes',               'Puntual'),
+(1313, 6,  6,  201, 2, 'Entrada', '2026-05-18', '07:55:00', 'Sofia - TI',                'Anticipado'),
+(1314, 7,  7,  202, 2, 'Entrada', '2026-05-18', '08:00:00', 'Miguel - TI',               'Puntual'),
+(1315, 4,  4,  401, 4, 'Entrada', '2026-05-18', '08:30:00', 'Carlos - OPS',              'Puntual'),
+(1316, 2,  2,  101, 1, 'Entrada', '2026-05-18', '08:06:00', 'Maria - RH',                'Retardo'),
+(1317, 16, 16, 501, 5, 'Entrada', '2026-05-18', '14:00:00', 'Felipe - MKT',              'Puntual'),
+(1318, 20, 20, 201, 2, 'Entrada', '2026-05-18', '14:05:00', 'Andres - TI becario',       'Puntual'),
+(1319, 28, 28, 301, 3, 'Entrada', '2026-05-18', '14:02:00', 'Esteban - FIN analista',    'Puntual'),
+(1320, 9,  9,  301, 3, 'Salida',  '2026-05-18', '17:04:00', 'MIKEL',                     'Puntual'),
+(1321, 10, 10, 301, 3, 'Salida',  '2026-05-18', '17:00:00', 'Ana',                       'Puntual'),
+(1322, 6,  6,  201, 2, 'Salida',  '2026-05-18', '17:08:00', 'Sofia',                     'Puntual'),
+(1323, 16, 16, 501, 5, 'Salida',  '2026-05-18', '21:01:00', 'Felipe nocturno',           'Puntual'),
+
+-- Martes 19 Mayo
+(1324, 9,  9,  301, 3, 'Entrada', '2026-05-19', '07:47:00', 'MIKEL - Martes',            'Anticipado'),
+(1325, 10, 10, 301, 3, 'Entrada', '2026-05-19', '08:00:00', 'Ana',                       'Puntual'),
+(1326, 8,  8,  301, 3, 'Entrada', '2026-05-19', '07:59:00', 'Veronica - FIN',            'Puntual'),
+(1327, 15, 15, 301, 3, 'Entrada', '2026-05-19', '07:53:00', 'Sergio - FIN',              'Anticipado'),
+(1328, 12, 12, 102, 1, 'Entrada', '2026-05-19', '08:00:00', 'Pamela - RH',               'Puntual'),
+(1329, 22, 22, 301, 3, 'Entrada', '2026-05-19', '14:00:00', 'Monica - FIN nocturno',     'Puntual'),
+(1330, 27, 27, 101, 1, 'Entrada', '2026-05-19', '14:10:00', 'Berenice - RH tecnico',     'Retardo'),
+(1331, 9,  9,  301, 3, 'Salida',  '2026-05-19', '17:10:00', 'MIKEL',                     'Puntual'),
+(1332, 10, 10, 301, 3, 'Salida',  '2026-05-19', '17:00:00', 'Ana',                       'Puntual'),
+(1333, 22, 22, 301, 3, 'Salida',  '2026-05-19', '21:00:00', 'Monica nocturno',           'Puntual'),
+
+-- Miercoles 20 Mayo
+(1334, 9,  9,  301, 3, 'Entrada', '2026-05-20', '07:43:00', 'MIKEL - Miercoles',         'Anticipado'),
+(1335, 3,  3,  101, 1, 'Entrada', '2026-05-20', '08:00:00', 'Rafael - RH',               'Puntual'),
+(1336, 5,  5,  501, 5, 'Entrada', '2026-05-20', '08:00:00', 'Lucia - MKT supervisor',    'Puntual'),
+(1337, 13, 13, 401, 4, 'Entrada', '2026-05-20', '08:10:00', 'Roberto - OPS',             'Retardo'),
+(1338, 19, 19, 201, 2, 'Entrada', '2026-05-20', '14:00:00', 'Hugo - TI nocturno',        'Puntual'),
+(1339, 23, 23, 501, 5, 'Entrada', '2026-05-20', '14:05:00', 'Jorge - MKT nocturno',      'Puntual'),
+(1340, 24, 24, 401, 4, 'Entrada', '2026-05-20', '14:03:00', 'Carmen - OPS nocturno',     'Puntual'),
+(1341, 9,  9,  301, 3, 'Salida',  '2026-05-20', '17:09:00', 'MIKEL',                     'Puntual'),
+(1342, 19, 19, 201, 2, 'Salida',  '2026-05-20', '21:00:00', 'Hugo nocturno',             'Puntual'),
+(1343, 24, 24, 401, 4, 'Salida',  '2026-05-20', '21:02:00', 'Carmen nocturno',           'Puntual'),
+
+-- Jueves 21 Mayo
+(1344, 9,  9,  301, 3, 'Entrada', '2026-05-21', '07:49:00', 'MIKEL - Jueves',            'Anticipado'),
+(1345, 10, 10, 301, 3, 'Entrada', '2026-05-21', '08:01:00', 'Ana - Jueves',              'Puntual'),
+(1346, 2,  2,  101, 1, 'Entrada', '2026-05-21', '07:57:00', 'Maria - Admin',             'Puntual'),
+(1347, 6,  6,  201, 2, 'Entrada', '2026-05-21', '08:00:00', 'Sofia - TI',                'Puntual'),
+(1348, 14, 14, 501, 5, 'Entrada', '2026-05-21', '08:00:00', 'Lorena - MKT',              'Puntual'),
+(1349, 17, 17, 101, 1, 'Entrada', '2026-05-21', '14:00:00', 'Isabel - RH nocturno',      'Puntual'),
+(1350, 21, 21, 101, 1, 'Entrada', '2026-05-21', '14:06:00', 'Diego - RH nocturno',       'Puntual'),
+(1351, 29, 29, 301, 3, 'Entrada', '2026-05-21', '14:00:00', 'Claudia - FIN nocturno',    'Puntual'),
+(1352, 9,  9,  301, 3, 'Salida',  '2026-05-21', '17:05:00', 'MIKEL',                     'Puntual'),
+(1353, 10, 10, 301, 3, 'Salida',  '2026-05-21', '17:00:00', 'Ana',                       'Puntual'),
+(1354, 17, 17, 101, 1, 'Salida',  '2026-05-21', '21:00:00', 'Isabel nocturno',           'Puntual'),
+
+-- Viernes 22 Mayo
+(1355, 1,  1,  101, 1, 'Entrada', '2026-05-22', '08:30:00', 'Juan Perez - Oficina RH',   'Puntual'),
+(1356, 11, 11, 102, 1, 'Entrada', '2026-05-22', '08:35:00', 'Juan Carlos - Oficina RH',  'Retardo'),
+(1357, 9,  9,  301, 3, 'Entrada', '2026-05-22', '07:44:00', 'MIKEL - Viernes anticipado','Anticipado'),
+(1358, 10, 10, 301, 3, 'Entrada', '2026-05-22', '08:00:00', 'Ana - Viernes',             'Puntual'),
+(1359, 4,  4,  401, 4, 'Entrada', '2026-05-22', '08:40:00', 'Carlos - OPS viernes',      'Puntual'),
+(1360, 1,  1,  101, 1, 'Salida',  '2026-05-22', '16:01:00', 'Juan Perez - Salida',       'Puntual'),
+(1361, 11, 11, 102, 1, 'Salida',  '2026-05-22', '15:59:00', 'Juan Carlos - Salida',      'Puntual'),
+(1362, 9,  9,  301, 3, 'Salida',  '2026-05-22', '17:07:00', 'MIKEL',                     'Puntual'),
+(1363, 10, 10, 301, 3, 'Salida',  '2026-05-22', '17:00:00', 'Ana',                       'Puntual'),
+
+-- ====== SEMANA 25 MAY (25-29 Mayo) ======
+-- Lunes 25 Mayo
+(1364, 9,  9,  301, 3, 'Entrada', '2026-05-25', '07:46:00', 'MIKEL - Inicio semana',     'Anticipado'),
+(1365, 10, 10, 301, 3, 'Entrada', '2026-05-25', '08:00:00', 'Ana - Lunes',               'Puntual'),
+(1366, 7,  7,  202, 2, 'Entrada', '2026-05-25', '07:58:00', 'Miguel - TI lunes',         'Puntual'),
+(1367, 3,  3,  101, 1, 'Entrada', '2026-05-25', '08:00:00', 'Rafael - RH',               'Puntual'),
+(1368, 8,  8,  301, 3, 'Entrada', '2026-05-25', '07:55:00', 'Veronica - FIN',            'Anticipado'),
+(1369, 5,  5,  501, 5, 'Entrada', '2026-05-25', '08:02:00', 'Lucia - MKT',               'Puntual'),
+(1370, 16, 16, 501, 5, 'Entrada', '2026-05-25', '14:00:00', 'Felipe - MKT nocturno',     'Puntual'),
+(1371, 18, 18, 401, 4, 'Entrada', '2026-05-25', '14:05:00', 'Gabriela - OPS nocturno',   'Puntual'),
+(1372, 30, 30, 301, 3, 'Entrada', '2026-05-25', '14:02:00', 'Patricia - FIN nocturno',   'Puntual'),
+(1373, 9,  9,  301, 3, 'Salida',  '2026-05-25', '17:06:00', 'MIKEL',                     'Puntual'),
+(1374, 10, 10, 301, 3, 'Salida',  '2026-05-25', '17:00:00', 'Ana',                       'Puntual'),
+(1375, 16, 16, 501, 5, 'Salida',  '2026-05-25', '21:00:00', 'Felipe nocturno',           'Puntual'),
+
+-- Martes 26 Mayo
+(1376, 9,  9,  301, 3, 'Entrada', '2026-05-26', '07:50:00', 'MIKEL - Martes',            'Anticipado'),
+(1377, 10, 10, 301, 3, 'Entrada', '2026-05-26', '08:07:00', 'Ana - Leve retardo',        'Retardo'),
+(1378, 6,  6,  201, 2, 'Entrada', '2026-05-26', '07:56:00', 'Sofia - TI',                'Anticipado'),
+(1379, 12, 12, 102, 1, 'Entrada', '2026-05-26', '08:00:00', 'Pamela - RH',               'Puntual'),
+(1380, 15, 15, 301, 3, 'Entrada', '2026-05-26', '08:00:00', 'Sergio - FIN',              'Puntual'),
+(1381, 26, 26, 401, 4, 'Entrada', '2026-05-26', '14:00:00', 'Adan - OPS tecnico',        'Puntual'),
+(1382, 22, 22, 301, 3, 'Entrada', '2026-05-26', '14:04:00', 'Monica - FIN nocturno',     'Puntual'),
+(1383, 9,  9,  301, 3, 'Salida',  '2026-05-26', '17:11:00', 'MIKEL',                     'Puntual'),
+(1384, 10, 10, 301, 3, 'Salida',  '2026-05-26', '17:01:00', 'Ana',                       'Puntual'),
+(1385, 22, 22, 301, 3, 'Salida',  '2026-05-26', '21:00:00', 'Monica nocturno',           'Puntual'),
+
+-- Miercoles 27 Mayo
+(1386, 9,  9,  301, 3, 'Entrada', '2026-05-27', '07:43:00', 'MIKEL - Miercoles',         'Anticipado'),
+(1387, 2,  2,  101, 1, 'Entrada', '2026-05-27', '08:00:00', 'Maria - Admin RH',          'Puntual'),
+(1388, 13, 13, 401, 4, 'Entrada', '2026-05-27', '08:05:00', 'Roberto - OPS',             'Puntual'),
+(1389, 4,  4,  401, 4, 'Entrada', '2026-05-27', '08:38:00', 'Carlos - OPS',              'Puntual'),
+(1390, 23, 23, 501, 5, 'Entrada', '2026-05-27', '14:00:00', 'Jorge - MKT nocturno',      'Puntual'),
+(1391, 19, 19, 201, 2, 'Entrada', '2026-05-27', '14:03:00', 'Hugo - TI nocturno',        'Puntual'),
+(1392, 28, 28, 301, 3, 'Entrada', '2026-05-27', '14:01:00', 'Esteban - FIN analista',    'Puntual'),
+(1393, 9,  9,  301, 3, 'Salida',  '2026-05-27', '17:08:00', 'MIKEL',                     'Puntual'),
+(1394, 2,  2,  101, 1, 'Salida',  '2026-05-27', '17:00:00', 'Maria',                     'Puntual'),
+(1395, 23, 23, 501, 5, 'Salida',  '2026-05-27', '21:00:00', 'Jorge nocturno',            'Puntual'),
+
+-- Jueves 28 Mayo
+(1396, 9,  9,  301, 3, 'Entrada', '2026-05-28', '07:47:00', 'MIKEL - Jueves',            'Anticipado'),
+(1397, 10, 10, 301, 3, 'Entrada', '2026-05-28', '08:00:00', 'Ana - Jueves',              'Puntual'),
+(1398, 6,  6,  201, 2, 'Entrada', '2026-05-28', '07:59:00', 'Sofia - TI',                'Puntual'),
+(1399, 14, 14, 501, 5, 'Entrada', '2026-05-28', '08:02:00', 'Lorena - MKT',              'Puntual'),
+(1400, 3,  3,  101, 1, 'Entrada', '2026-05-28', '08:00:00', 'Rafael - RH',               'Puntual'),
+(1401, 17, 17, 101, 1, 'Entrada', '2026-05-28', '14:00:00', 'Isabel - RH nocturno',      'Puntual'),
+(1402, 25, 25, 201, 2, 'Entrada', '2026-05-28', '14:07:00', 'Ricardo - TI nocturno',     'Retardo'),
+(1403, 29, 29, 301, 3, 'Entrada', '2026-05-28', '14:00:00', 'Claudia - FIN analista',    'Puntual'),
+(1404, 9,  9,  301, 3, 'Salida',  '2026-05-28', '17:06:00', 'MIKEL',                     'Puntual'),
+(1405, 10, 10, 301, 3, 'Salida',  '2026-05-28', '17:00:00', 'Ana',                       'Puntual'),
+(1406, 17, 17, 101, 1, 'Salida',  '2026-05-28', '21:00:00', 'Isabel nocturno',           'Puntual'),
+
+-- Viernes 29 Mayo
+(1407, 1,  1,  101, 1, 'Entrada', '2026-05-29', '08:30:00', 'Juan Perez - Oficina RH',   'Puntual'),
+(1408, 11, 11, 102, 1, 'Entrada', '2026-05-29', '08:30:00', 'Juan Carlos - Oficina RH',  'Puntual'),
+(1409, 9,  9,  301, 3, 'Entrada', '2026-05-29', '07:46:00', 'MIKEL - Viernes',           'Anticipado'),
+(1410, 10, 10, 301, 3, 'Entrada', '2026-05-29', '08:00:00', 'Ana - Viernes',             'Puntual'),
+(1411, 2,  2,  101, 1, 'Entrada', '2026-05-29', '07:58:00', 'Maria - Viernes',           'Puntual'),
+(1412, 1,  1,  101, 1, 'Salida',  '2026-05-29', '16:00:00', 'Juan Perez - Salida',       'Puntual'),
+(1413, 11, 11, 102, 1, 'Salida',  '2026-05-29', '16:02:00', 'Juan Carlos - Salida',      'Puntual'),
+(1414, 9,  9,  301, 3, 'Salida',  '2026-05-29', '17:09:00', 'MIKEL',                     'Puntual'),
+(1415, 10, 10, 301, 3, 'Salida',  '2026-05-29', '17:00:00', 'Ana',                       'Puntual'),
+(1416, 2,  2,  101, 1, 'Salida',  '2026-05-29', '17:03:00', 'Maria',                     'Puntual'),
+
+-- ====== SEMANA 1 JUN (1-5 Junio) ======
+-- Lunes 1 Junio
+(1417, 9,  9,  301, 3, 'Entrada', '2026-06-01', '07:48:00', 'MIKEL - Inicio junio',      'Anticipado'),
+(1418, 10, 10, 301, 3, 'Entrada', '2026-06-01', '08:00:00', 'Ana - Lunes junio',         'Puntual'),
+(1419, 6,  6,  201, 2, 'Entrada', '2026-06-01', '07:53:00', 'Sofia - TI junio',          'Anticipado'),
+(1420, 7,  7,  202, 2, 'Entrada', '2026-06-01', '08:00:00', 'Miguel - TI',               'Puntual'),
+(1421, 3,  3,  101, 1, 'Entrada', '2026-06-01', '08:00:00', 'Rafael - RH',               'Puntual'),
+(1422, 4,  4,  401, 4, 'Entrada', '2026-06-01', '08:32:00', 'Carlos - OPS',              'Puntual'),
+(1423, 5,  5,  501, 5, 'Entrada', '2026-06-01', '08:05:00', 'Lucia - MKT',               'Puntual'),
+(1424, 8,  8,  301, 3, 'Entrada', '2026-06-01', '07:59:00', 'Veronica - FIN',            'Puntual'),
+(1425, 16, 16, 501, 5, 'Entrada', '2026-06-01', '14:00:00', 'Felipe - MKT nocturno',     'Puntual'),
+(1426, 18, 18, 401, 4, 'Entrada', '2026-06-01', '14:00:00', 'Gabriela - OPS tecnico',    'Puntual'),
+(1427, 22, 22, 301, 3, 'Entrada', '2026-06-01', '14:04:00', 'Monica - FIN nocturno',     'Puntual'),
+(1428, 20, 20, 201, 2, 'Entrada', '2026-06-01', '14:01:00', 'Andres - TI becario',       'Puntual'),
+(1429, 9,  9,  301, 3, 'Salida',  '2026-06-01', '17:05:00', 'MIKEL',                     'Puntual'),
+(1430, 10, 10, 301, 3, 'Salida',  '2026-06-01', '17:00:00', 'Ana',                       'Puntual'),
+(1431, 6,  6,  201, 2, 'Salida',  '2026-06-01', '17:08:00', 'Sofia',                     'Puntual'),
+(1432, 16, 16, 501, 5, 'Salida',  '2026-06-01', '21:00:00', 'Felipe nocturno',           'Puntual'),
+(1433, 18, 18, 401, 4, 'Salida',  '2026-06-01', '21:00:00', 'Gabriela nocturno',         'Puntual'),
+
+-- Martes 2 Junio
+(1434, 9,  9,  301, 3, 'Entrada', '2026-06-02', '07:45:00', 'MIKEL - Martes junio',      'Anticipado'),
+(1435, 10, 10, 301, 3, 'Entrada', '2026-06-02', '08:02:00', 'Ana - Martes',              'Puntual'),
+(1436, 2,  2,  101, 1, 'Entrada', '2026-06-02', '08:00:00', 'Maria - Admin',             'Puntual'),
+(1437, 12, 12, 102, 1, 'Entrada', '2026-06-02', '08:05:00', 'Pamela - RH',               'Puntual'),
+(1438, 15, 15, 301, 3, 'Entrada', '2026-06-02', '07:56:00', 'Sergio - FIN',              'Anticipado'),
+(1439, 13, 13, 401, 4, 'Entrada', '2026-06-02', '08:11:00', 'Roberto - OPS',             'Retardo'),
+(1440, 14, 14, 501, 5, 'Entrada', '2026-06-02', '08:00:00', 'Lorena - MKT',              'Puntual'),
+(1441, 19, 19, 201, 2, 'Entrada', '2026-06-02', '14:00:00', 'Hugo - TI nocturno',        'Puntual'),
+(1442, 21, 21, 101, 1, 'Entrada', '2026-06-02', '14:03:00', 'Diego - RH nocturno',       'Puntual'),
+(1443, 26, 26, 401, 4, 'Entrada', '2026-06-02', '14:00:00', 'Adan - OPS tecnico',        'Puntual'),
+(1444, 30, 30, 301, 3, 'Entrada', '2026-06-02', '14:05:00', 'Patricia - FIN analista',   'Puntual'),
+(1445, 9,  9,  301, 3, 'Salida',  '2026-06-02', '17:09:00', 'MIKEL',                     'Puntual'),
+(1446, 10, 10, 301, 3, 'Salida',  '2026-06-02', '17:00:00', 'Ana',                       'Puntual'),
+(1447, 2,  2,  101, 1, 'Salida',  '2026-06-02', '17:00:00', 'Maria',                     'Puntual'),
+(1448, 19, 19, 201, 2, 'Salida',  '2026-06-02', '21:00:00', 'Hugo nocturno',             'Puntual'),
+
+-- Miercoles 3 Junio
+(1449, 9,  9,  301, 3, 'Entrada', '2026-06-03', '07:42:00', 'MIKEL - Miercoles junio',   'Anticipado'),
+(1450, 10, 10, 301, 3, 'Entrada', '2026-06-03', '08:00:00', 'Ana',                       'Puntual'),
+(1451, 6,  6,  201, 2, 'Entrada', '2026-06-03', '07:55:00', 'Sofia - TI',                'Anticipado'),
+(1452, 4,  4,  401, 4, 'Entrada', '2026-06-03', '08:35:00', 'Carlos - OPS',              'Puntual'),
+(1453, 3,  3,  101, 1, 'Entrada', '2026-06-03', '08:01:00', 'Rafael - RH',               'Puntual'),
+(1454, 2,  2,  101, 1, 'Entrada', '2026-06-03', '08:08:00', 'Maria - Admin',             'Retardo'),
+(1455, 17, 17, 101, 1, 'Entrada', '2026-06-03', '14:00:00', 'Isabel - RH nocturno',      'Puntual'),
+(1456, 23, 23, 501, 5, 'Entrada', '2026-06-03', '14:02:00', 'Jorge - MKT nocturno',      'Puntual'),
+(1457, 24, 24, 401, 4, 'Entrada', '2026-06-03', '14:00:00', 'Carmen - OPS nocturno',     'Puntual'),
+(1458, 28, 28, 301, 3, 'Entrada', '2026-06-03', '14:04:00', 'Esteban - FIN analista',    'Puntual'),
+(1459, 9,  9,  301, 3, 'Salida',  '2026-06-03', '17:07:00', 'MIKEL',                     'Puntual'),
+(1460, 10, 10, 301, 3, 'Salida',  '2026-06-03', '17:00:00', 'Ana',                       'Puntual'),
+(1461, 17, 17, 101, 1, 'Salida',  '2026-06-03', '21:00:00', 'Isabel nocturno',           'Puntual'),
+(1462, 23, 23, 501, 5, 'Salida',  '2026-06-03', '21:00:00', 'Jorge nocturno',            'Puntual'),
+
+-- Jueves 4 Junio
+(1463, 9,  9,  301, 3, 'Entrada', '2026-06-04', '07:46:00', 'MIKEL - Jueves junio',      'Anticipado'),
+(1464, 10, 10, 301, 3, 'Entrada', '2026-06-04', '08:00:00', 'Ana - Jueves',              'Puntual'),
+(1465, 7,  7,  202, 2, 'Entrada', '2026-06-04', '07:58:00', 'Miguel - TI jueves',        'Puntual'),
+(1466, 8,  8,  301, 3, 'Entrada', '2026-06-04', '07:54:00', 'Veronica - FIN',            'Anticipado'),
+(1467, 5,  5,  501, 5, 'Entrada', '2026-06-04', '08:00:00', 'Lucia - MKT supervisor',    'Puntual'),
+(1468, 15, 15, 301, 3, 'Entrada', '2026-06-04', '07:59:00', 'Sergio - FIN',              'Puntual'),
+(1469, 16, 16, 501, 5, 'Entrada', '2026-06-04', '14:01:00', 'Felipe - MKT nocturno',     'Puntual'),
+(1470, 25, 25, 201, 2, 'Entrada', '2026-06-04', '14:00:00', 'Ricardo - TI nocturno',     'Puntual'),
+(1471, 27, 27, 101, 1, 'Entrada', '2026-06-04', '14:05:00', 'Berenice - RH tecnico',     'Puntual'),
+(1472, 29, 29, 301, 3, 'Entrada', '2026-06-04', '14:02:00', 'Claudia - FIN analista',    'Puntual'),
+(1473, 9,  9,  301, 3, 'Salida',  '2026-06-04', '17:05:00', 'MIKEL',                     'Puntual'),
+(1474, 10, 10, 301, 3, 'Salida',  '2026-06-04', '17:00:00', 'Ana',                       'Puntual'),
+(1475, 16, 16, 501, 5, 'Salida',  '2026-06-04', '21:00:00', 'Felipe nocturno',           'Puntual'),
+(1476, 25, 25, 201, 2, 'Salida',  '2026-06-04', '21:01:00', 'Ricardo nocturno',          'Puntual'),
+
+-- ============================================================
+-- VIERNES 5 JUNIO 2026 - HOY
+-- Turno Matutino: entradas sin salida = usuarios DENTRO ahora
+-- Control de Emergencia mostrara presencia activa en 5 areas
+-- ============================================================
+(1477, 9,  9,  301, 3, 'Entrada', '2026-06-05', '07:49:00', 'MIKEL - Hoy viernes junio', 'Anticipado'),
+(1478, 10, 10, 301, 3, 'Entrada', '2026-06-05', '08:00:00', 'Ana - Hoy viernes',         'Puntual'),
+(1479, 6,  6,  201, 2, 'Entrada', '2026-06-05', '07:52:00', 'Sofia - TI hoy',            'Anticipado'),
+(1480, 7,  7,  202, 2, 'Entrada', '2026-06-05', '08:00:00', 'Miguel - TI hoy',           'Puntual'),
+(1481, 2,  2,  101, 1, 'Entrada', '2026-06-05', '08:00:00', 'Maria - Admin RH hoy',      'Puntual'),
+(1482, 3,  3,  101, 1, 'Entrada', '2026-06-05', '07:57:00', 'Rafael - RH hoy',           'Anticipado'),
+(1483, 4,  4,  401, 4, 'Entrada', '2026-06-05', '08:33:00', 'Carlos - OPS hoy',          'Puntual'),
+(1484, 5,  5,  501, 5, 'Entrada', '2026-06-05', '08:01:00', 'Lucia - MKT hoy',           'Puntual'),
+(1485, 8,  8,  301, 3, 'Entrada', '2026-06-05', '07:56:00', 'Veronica - FIN hoy',        'Anticipado'),
+(1486, 12, 12, 102, 1, 'Entrada', '2026-06-05', '08:00:00', 'Pamela - RH hoy',           'Puntual'),
+(1487, 13, 13, 401, 4, 'Entrada', '2026-06-05', '08:05:00', 'Roberto - OPS hoy',         'Puntual'),
+(1488, 14, 14, 501, 5, 'Entrada', '2026-06-05', '08:10:00', 'Lorena - MKT hoy',          'Retardo'),
+(1489, 15, 15, 301, 3, 'Entrada', '2026-06-05', '07:53:00', 'Sergio - FIN hoy',          'Anticipado'),
+(1490, 1,  1,  101, 1, 'Entrada', '2026-06-05', '08:30:00', 'Juan Perez - Oficina RH hoy','Puntual'),
+(1491, 11, 11, 102, 1, 'Entrada', '2026-06-05', '08:32:00', 'Juan Carlos - Oficina RH hoy','Puntual');
+
+-- ============================================================
+-- ESTADO PRESENCIA: usuarios con entrada hoy SIN salida = Dentro
+-- ============================================================
+UPDATE usuarios SET estado_presencia = 'Dentro' WHERE matricula IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+UPDATE usuarios SET estado_presencia = 'Fuera'  WHERE matricula IN (16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31);
+
+-- ============================================================
+-- ACTUALIZAR BITACORAS con totales acumulados (May-Jun 2026)
+-- ============================================================
+UPDATE bitacora SET num_entradas = 95,  num_retardos = 6,  num_entradas_anticipadas = 52 WHERE matricula = 9;
+UPDATE bitacora SET num_entradas = 80,  num_retardos = 5,  num_entradas_anticipadas = 30 WHERE matricula = 10;
+UPDATE bitacora SET num_entradas = 32,  num_retardos = 2,  num_entradas_anticipadas = 16 WHERE matricula = 1;
+UPDATE bitacora SET num_entradas = 28,  num_retardos = 3,  num_entradas_anticipadas = 8  WHERE matricula = 2;
+UPDATE bitacora SET num_entradas = 22,  num_retardos = 1,  num_entradas_anticipadas = 4  WHERE matricula = 3;
+UPDATE bitacora SET num_entradas = 18,  num_retardos = 2,  num_entradas_anticipadas = 3  WHERE matricula = 4;
+UPDATE bitacora SET num_entradas = 16,  num_retardos = 1,  num_entradas_anticipadas = 5  WHERE matricula = 5;
+UPDATE bitacora SET num_entradas = 18,  num_retardos = 0,  num_entradas_anticipadas = 10 WHERE matricula = 6;
+UPDATE bitacora SET num_entradas = 16,  num_retardos = 0,  num_entradas_anticipadas = 5  WHERE matricula = 7;
+UPDATE bitacora SET num_entradas = 14,  num_retardos = 0,  num_entradas_anticipadas = 6  WHERE matricula = 8;
+UPDATE bitacora SET num_entradas = 12,  num_retardos = 0,  num_entradas_anticipadas = 2  WHERE matricula = 11;
+UPDATE bitacora SET num_entradas = 12,  num_retardos = 1,  num_entradas_anticipadas = 3  WHERE matricula = 12;
+UPDATE bitacora SET num_entradas = 10,  num_retardos = 2,  num_entradas_anticipadas = 0  WHERE matricula = 13;
+UPDATE bitacora SET num_entradas = 10,  num_retardos = 1,  num_entradas_anticipadas = 2  WHERE matricula = 14;
+UPDATE bitacora SET num_entradas = 10,  num_retardos = 0,  num_entradas_anticipadas = 4  WHERE matricula = 15;
+UPDATE bitacora SET num_entradas = 18,  num_retardos = 2,  num_entradas_anticipadas = 0  WHERE matricula = 16;
+UPDATE bitacora SET num_entradas = 10,  num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 17;
+UPDATE bitacora SET num_entradas = 8,   num_retardos = 1,  num_entradas_anticipadas = 0  WHERE matricula = 18;
+UPDATE bitacora SET num_entradas = 8,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 19;
+UPDATE bitacora SET num_entradas = 6,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 20;
+UPDATE bitacora SET num_entradas = 6,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 21;
+UPDATE bitacora SET num_entradas = 10,  num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 22;
+UPDATE bitacora SET num_entradas = 8,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 23;
+UPDATE bitacora SET num_entradas = 6,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 24;
+UPDATE bitacora SET num_entradas = 6,   num_retardos = 1,  num_entradas_anticipadas = 0  WHERE matricula = 25;
+UPDATE bitacora SET num_entradas = 4,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 26;
+UPDATE bitacora SET num_entradas = 4,   num_retardos = 1,  num_entradas_anticipadas = 0  WHERE matricula = 27;
+UPDATE bitacora SET num_entradas = 6,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 28;
+UPDATE bitacora SET num_entradas = 4,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 29;
+UPDATE bitacora SET num_entradas = 4,   num_retardos = 0,  num_entradas_anticipadas = 0  WHERE matricula = 30;

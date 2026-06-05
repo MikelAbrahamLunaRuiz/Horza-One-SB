@@ -36,7 +36,7 @@ CREATE TABLE usuarios (
   estado_presencia ENUM('Dentro', 'Fuera') DEFAULT 'Fuera' COMMENT 'Indica si está físicamente en las instalaciones',
   cp_usuario VARCHAR(7),
   calle_usuario VARCHAR (40),
-  contrasenia varchar(12),
+  contrasenia varchar(255),
   foto_perfil VARCHAR(255) NULL COMMENT 'Ruta o URL de foto de perfil',
   FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
 ) ENGINE=InnoDB;
