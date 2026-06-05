@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
@@ -61,6 +62,7 @@ public class LoginServiceImpl implements LoginService {
     private PasswordUtil passwordUtil;
 
     @Override
+    @Transactional
     public LoginResponse login(LoginRequest loginRequest) {
         log.info("Intento de login para correo: {}", sanitizarCorreo(loginRequest.getCorreo()));
 
